@@ -1,0 +1,9 @@
+<div class="pf2e-reminders-picker">
+    {{#each triggers}}
+        <label class="pf2e-reminders-choice">
+            <input type="radio" name="trigger" value="{{id}}"{{#if selected}} checked{{/if}}>
+            <i class="{{icon}} fa-fw"></i>
+            <span>{{label}}</span>
+        </label>
+    {{/each}}
+</div>

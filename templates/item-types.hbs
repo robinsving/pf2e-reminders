@@ -1,0 +1,14 @@
+<form class="standard-form" style="max-height: 60vh; overflow-y: auto;">
+    <p class="hint">{{localize "REMINDERS.itemTypes.intro"}}</p>
+    {{#each types}}
+        <div class="form-group">
+            <label for="pf2e-reminders-type-{{type}}">{{label}}</label>
+            <div class="form-fields">
+                <input type="checkbox" id="pf2e-reminders-type-{{type}}" name="type" value="{{type}}"{{#if checked}} checked{{/if}}>
+            </div>
+        </div>
+    {{/each}}
+    <footer class="form-footer">
+        <button type="submit"><i class="fa-solid fa-check"></i> <span>{{localize "REMINDERS.itemTypes.save"}}</span></button>
+    </footer>
+</form>

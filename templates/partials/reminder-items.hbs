@@ -1,0 +1,18 @@
+{{#each reminders}}
+    <li>
+        <span>
+            {{#if messageId}}
+                <a data-show-message="{{messageId}}" data-tooltip="{{localize "REMINDERS.goto"}}">{{text}}</a>
+            {{else if itemUuid}}
+                <a data-show-item="{{itemUuid}}" data-tooltip="{{localize "REMINDERS.gotoItem"}}">{{text}}</a>
+            {{else}}
+                {{text}}
+            {{/if}}
+            <span class="pf2e-reminders-source">({{kindLabel}})</span>
+        </span>
+        <span class="pf2e-reminders-row-buttons">
+            {{#if ../showTrigger}}<a class="pf2e-reminders-trigger" data-action="chooseTrigger" data-id="{{id}}" data-tooltip="{{triggerTooltip}}"><i class="{{triggerIcon}}"></i></a>{{/if}}
+            <a data-action="removeOne" data-id="{{id}}" data-tooltip="{{localize "REMINDERS.chat.remove"}}"><i class="fa-solid fa-trash"></i></a>
+        </span>
+    </li>
+{{/each}}

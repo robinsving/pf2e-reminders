@@ -1,0 +1,201 @@
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { addItemBells } from "../reminders/ItemBell";
+import { makeDoc, setSettings } from "./helpers";
+
+let actor;
+let item;
+let app;
+let user;
+
+function makeHtml() {
+    const html = document.createElement("div");
+    html.innerHTML = `<ol>
+        <li data-item-id="i"><div class="item-controls"><a data-action="edit-item"></a></div></li>
+        <li data-item-id="unknown"><div class="item-controls"></div></li>
+        <li data-item-id="i"><span>no controls</span></li>
+    </ol>`;
+    return html;
+}
+
+beforeEach(() => {
+    setSettings();
+    user = makeDoc();
+    game.user = user;
+    actor = { isOwner: true, name: "Gavilar", uuid: "Actor.a" };
+    item = { uuid: "Actor.a.Item.i", name: "Aura of Courage", actor };
+    actor.items = { get: vi.fn((id) => (id === "i" ? item : undefined)) };
+    app = { actor };
+});
+
+describe("addItemBells", () => {
+    it("adds a bell only to rows with a known item", () => {
+        const html = makeHtml();
+        addItemBells(app, html);
+        expect(html.querySelectorAll(".pf2e-reminders-item-bell")).toHaveLength(1);
+    });
+
+    it("does not add a second bell on repeated renders", () => {
+        const html = makeHtml();
+        addItemBells(app, html);
+        addItemBells(app, html);
+        expect(html.querySelectorAll(".pf2e-reminders-item-bell")).toHaveLength(1);
+    });
+
+    it("accepts a jQuery-style html argument", () => {
+        const html = makeHtml();
+        addItemBells(app, [html]);
+        expect(html.querySelector(".pf2e-reminders-item-bell")).not.toBeNull();
+    });
+
+    it("marks the bell active when you already have a reminder for the item", () => {
+        user = makeDoc([{ id: "a", itemUuid: item.uuid, actorUuid: "Actor.a" }]);
+        game.user = user;
+        const html = makeHtml();
+        addItemBells(app, html);
+        expect(html.querySelector(".pf2e-reminders-item-bell").classList.contains("active")).toBe(true);
+    });
+
+    it("stores the reminder on the user, tagged with the actor, when clicked", async () => {
+        const html = makeHtml();
+        addItemBells(app, html);
+        const bell = html.querySelector(".pf2e-reminders-item-bell");
+        bell.click();
+        await vi.waitFor(() => expect(bell.classList.contains("active")).toBe(true));
+        expect(user.setFlag).toHaveBeenCalledWith("pf2e-reminders", "reminders", [
+            expect.objectContaining({ text: "Aura of Courage", itemUuid: item.uuid, actorUuid: "Actor.a" }),
+        ]);
+    });
+
+    it("adds no bells for actors the user does not own", () => {
+        actor.isOwner = false;
+        const html = makeHtml();
+        addItemBells(app, html);
+        expect(html.querySelector(".pf2e-reminders-item-bell")).toBeNull();
+    });
+
+    it("adds no bell to spellcasting entries such as Arcane Prepared Spells", () => {
+        item.type = "spellcastingEntry";
+        const html = makeHtml();
+        addItemBells(app, html);
+        expect(html.querySelector(".pf2e-reminders-item-bell")).toBeNull();
+    });
+
+    it("follows the item types chosen in the settings", () => {
+        setSettings({ excludedItemTypes: ["weapon"] });
+        item.type = "weapon";
+        let html = makeHtml();
+        addItemBells(app, html);
+        expect(html.querySelector(".pf2e-reminders-item-bell")).toBeNull();
+
+        item.type = "spellcastingEntry";
+        html = makeHtml();
+        addItemBells(app, html);
+        expect(html.querySelector(".pf2e-reminders-item-bell")).not.toBeNull();
+    });
+
+    describe("NPC sheets (abilities and strikes have a controls icon list)", () => {
+        function makeNpcHtml() {
+            const html = document.createElement("div");
+            html.innerHTML = `<ol>
+                <li data-item-id="i"><h4><span class="name">Aura</span></h4>
+                    <div class="controls"><a class="chat"></a><a data-action="edit-item"></a></div></li>
+                <li data-item-id="i"><h4><a class="name">Jaws</a></h4>
+                    <div class="controls"><a class="chat"></a></div></li>
+                <li data-item-id="unknown"><h4><span class="name">Mystery</span></h4><div class="controls"></div></li>
+                <li data-item-id="i"><h4><span class="name">No icons</span></h4></li>
+            </ol>`;
+            return html;
+        }
+
+        function setNpcBells(on) {
+            actor.type = "npc";
+            setSettings({ npcReminders: on });
+        }
+
+        it("adds no bells on NPC sheets by default", () => {
+            setNpcBells(false);
+            const html = makeNpcHtml();
+            addItemBells(app, html);
+            expect(html.querySelector(".pf2e-reminders-item-bell")).toBeNull();
+        });
+
+        it("still adds bells to non-NPC sheets when the NPC setting is off", () => {
+            setNpcBells(false);
+            actor.type = "character";
+            const html = makeHtml();
+            addItemBells(app, html);
+            expect(html.querySelector(".pf2e-reminders-item-bell")).not.toBeNull();
+        });
+
+        it("puts the bell first in the icon list on the right when the GM has turned it on", () => {
+            setNpcBells(true);
+            const html = makeNpcHtml();
+            addItemBells(app, html);
+            const bells = html.querySelectorAll(".controls .pf2e-reminders-item-bell");
+            expect(bells).toHaveLength(2);
+            expect(bells[0].nextElementSibling.className).toBe("chat");
+            expect(html.querySelector("h4 .pf2e-reminders-item-bell")).toBeNull();
+        });
+
+        it("does not add a second bell on repeated renders", () => {
+            setNpcBells(true);
+            const html = makeNpcHtml();
+            addItemBells(app, html);
+            addItemBells(app, html);
+            expect(html.querySelectorAll(".pf2e-reminders-item-bell")).toHaveLength(2);
+        });
+
+        it("respects the excluded item types and the actor's ownership", () => {
+            setNpcBells(true);
+            item.type = "spellcastingEntry";
+            let html = makeNpcHtml();
+            addItemBells(app, html);
+            expect(html.querySelector(".pf2e-reminders-item-bell")).toBeNull();
+
+            item.type = "action";
+            actor.isOwner = false;
+            html = makeNpcHtml();
+            addItemBells(app, html);
+            expect(html.querySelector(".pf2e-reminders-item-bell")).toBeNull();
+        });
+
+        it("toggles the reminder when clicked", async () => {
+            setNpcBells(true);
+            const html = makeNpcHtml();
+            addItemBells(app, html);
+            const bell = html.querySelector(".pf2e-reminders-item-bell");
+            bell.click();
+            await vi.waitFor(() => expect(bell.classList.contains("active")).toBe(true));
+            expect(user.setFlag).toHaveBeenCalled();
+        });
+
+        it("leaves rows that have item controls to the item controls", () => {
+            setNpcBells(true);
+            const html = makeHtml();
+            addItemBells(app, html);
+            expect(html.querySelectorAll(".pf2e-reminders-item-bell")).toHaveLength(1);
+            expect(html.querySelector(".item-controls .pf2e-reminders-item-bell")).not.toBeNull();
+        });
+    });
+
+    it("makes a turn start reminder when clicked", async () => {
+        const html = makeHtml();
+        addItemBells(app, html);
+        html.querySelector(".pf2e-reminders-item-bell").click();
+        await vi.waitFor(() => expect(user.setFlag).toHaveBeenCalled());
+        expect(user.getFlag("pf2e-reminders", "reminders")[0].trigger).toBe("turnStart");
+    });
+
+    it("adds no bells when the user has turned the module off", () => {
+        setSettings({ enabled: false });
+        const html = makeHtml();
+        addItemBells(app, html);
+        expect(html.querySelector(".pf2e-reminders-item-bell")).toBeNull();
+    });
+
+    it("ignores sheets without an actor", () => {
+        const html = makeHtml();
+        addItemBells({}, html);
+        expect(html.querySelector(".pf2e-reminders-item-bell")).toBeNull();
+    });
+});

@@ -1,0 +1,8 @@
+<div class="pf2e-reminders-body"{{#if scroll}} style="max-height: 60vh; overflow-y: auto;"{{/if}}>
+    {{> "modules/pf2e-reminders/templates/partials/title-bar.hbs" hasActor=hasActor triggerLabel=triggerLabel triggerIcon=triggerIcon showList=showList showToggle=showToggle}}
+    {{#if note}}
+        <p>{{note}}</p>
+    {{else}}
+        <ul class="pf2e-reminders-list">{{> "modules/pf2e-reminders/templates/partials/reminder-items.hbs" reminders=reminders showTrigger=showTrigger}}</ul>
+    {{/if}}
+</div>

@@ -1,0 +1,77 @@
+{
+  "REMINDERS": {
+    "AddReminder": "Add reminder: {actor}",
+    "goto": "Show the original message",
+    "messageGone": "The original message has been deleted.",
+    "added": "Reminder added: {text}",
+    "chat": {
+      "title": "Reminders",
+      "past": "Reminders for a past turn.",
+      "remove": "Remove reminder",
+      "custom": "Add a custom reminder",
+      "add": "Add reminder",
+      "mute": "Turn off reminders for this actor",
+      "unmute": "Turn on reminders for this actor",
+      "showAll": "Show all reminders for this actor",
+      "empty": "No reminders."
+    },
+    "gotoItem": "Open the item",
+    "itemGone": "The item no longer exists.",
+    "itemBell": "Toggle reminder for this item",
+    "manager": {
+      "name": "Stored reminders",
+      "label": "Manage reminders",
+      "hint": "List and remove the reminders stored for you.",
+      "title": "Stored reminders",
+      "empty": "You have no stored reminders.",
+      "removeAll": "Remove all",
+      "user": "Without an actor",
+      "unknown": "Unavailable actor",
+      "clearAll": "Clear all reminders",
+      "clearConfirm": "This removes all your stored reminders and your on/off settings, and clears leftover reminders that older versions stored on actors. It cannot be undone. Continue?"
+    },
+    "panel": {
+      "title": "Reminders",
+      "button": "Reminders",
+      "combatant": "Reminders",
+      "empty": "No reminders for this actor."
+    },
+    "kind": {
+      "chat": "chat",
+      "item": "item",
+      "custom": "custom"
+    },
+    "enabled": {
+      "name": "Enable reminders",
+      "hint": "Turn all reminder features off for you: the chat menu entry, the sheet bells and button, and the turn messages. Your stored reminders are kept."
+    },
+    "itemTypes": {
+      "name": "Item reminder bells",
+      "label": "Choose item types",
+      "hint": "Choose which kinds of items get a reminder bell on actor sheets.",
+      "title": "Item reminder bells",
+      "intro": "Items of the ticked types get a reminder bell on actor sheets. Reopen open sheets to see the change.",
+      "save": "Save",
+      "excluded": "Item types without a reminder bell"
+    },
+    "npcReminders": {
+      "name": "Reminders for NPCs",
+      "hint": "GM setting. Turn on the reminder features for NPC actors: the bells on their sheets, the Reminders button, the combat tracker entry and their name in the chat menu. Off by default."
+    },
+    "debug": {
+      "name": "Debug logging",
+      "hint": "Print debug messages to the browser console."
+    },
+    "trigger": {
+      "turnStart": "turn start",
+      "turnEnd": "turn end",
+      "hit": "you hit",
+      "crit": "you critically hit",
+      "wasHit": "you are hit",
+      "wasCritted": "you are critically hit",
+      "toggle": "Fires on: {trigger}. Click to choose another trigger.",
+      "choose": "Choose a trigger",
+      "select": "Select"
+    }
+  }
+}

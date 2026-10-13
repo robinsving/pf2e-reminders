@@ -1,0 +1,20 @@
+<div class="pf2e-reminders-body" style="max-height: 60vh; overflow-y: auto;">
+    {{#each groups}}
+        <details data-key="{{key}}"{{#if open}} open{{/if}}>
+            <summary class="pf2e-reminders-summary">
+                <span><i class="fa-solid fa-fw fa-chevron-right pf2e-reminders-chevron"></i> {{title}} ({{count}})</span>
+                <a data-action="removeAllFor" data-doc="{{key}}" data-tooltip="{{localize "REMINDERS.manager.removeAll"}}" class="pf2e-reminders-remove-all">
+                    <i class="fa-solid fa-fw fa-trash"></i> {{localize "REMINDERS.manager.removeAll"}}
+                </a>
+            </summary>
+            <ul class="pf2e-reminders-list">{{> "modules/pf2e-reminders/templates/partials/reminder-items.hbs" reminders=reminders showTrigger=true}}</ul>
+        </details>
+    {{else}}
+        <p>{{localize "REMINDERS.manager.empty"}}</p>
+    {{/each}}
+    <div class="standard-form">
+        <footer class="form-footer">
+            <button type="button" data-action="clearAll"><i class="fa-solid fa-trash"></i> <span>{{localize "REMINDERS.manager.clearAll"}}</span></button>
+        </footer>
+    </div>
+</div>

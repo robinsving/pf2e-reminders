@@ -1,0 +1,137 @@
+.pf2e-reminders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    margin: 0.5em 0;
+}
+
+.pf2e-reminders-list .pf2e-reminders-source {
+    opacity: 0.7;
+    font-size: var(--font-size-12, 12px);
+}
+
+.pf2e-reminders-chat ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.pf2e-reminders-chat li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.pf2e-reminders-item-bell.active {
+    color: var(--color-warm-2, orange);
+}
+
+.pf2e-reminders-manager .pf2e-reminders-list {
+    list-style: none;
+    padding: 0;
+}
+
+.pf2e-reminders-manager li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.pf2e-reminders-add {
+    display: flex;
+    gap: 0.25em;
+    margin-top: 0.5em;
+}
+
+.pf2e-reminders-add input {
+    flex: 1;
+}
+
+.pf2e-reminders-add button {
+    flex: 0 0 auto;
+    width: auto;
+}
+
+.pf2e-reminders-enabled {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+h4.pf2e-reminders-title,
+.pf2e-reminders-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* The flex layout removes the browser's own expand marker, so the sections get a chevron that points right when
+   collapsed and turns down when expanded. */
+.pf2e-reminders-summary {
+    cursor: pointer;
+    list-style: none;
+}
+
+.pf2e-reminders-summary::-webkit-details-marker {
+    display: none;
+}
+
+.pf2e-reminders-chevron {
+    transition: transform 0.15s;
+}
+
+details[open] > .pf2e-reminders-summary .pf2e-reminders-chevron {
+    transform: rotate(90deg);
+}
+
+.pf2e-reminders-buttons {
+    display: flex;
+    gap: 0.5em;
+    font-size: var(--font-size-12, 12px);
+}
+
+.pf2e-reminders-buttons [data-toggle-actor].muted {
+    opacity: 0.5;
+}
+
+.pf2e-reminders-remove-all {
+    font-size: var(--font-size-12, 12px);
+}
+
+h4 .pf2e-reminders-trigger {
+    font-size: var(--font-size-12, 12px);
+    opacity: 0.7;
+}
+
+.pf2e-reminders-row-buttons {
+    display: flex;
+    gap: 0.5em;
+}
+
+/* The prompt row uses Foundry's form-group and form-fields classes, which lay the input and the trigger icon out
+   side by side; the icon keeps its own size and the field takes the rest. */
+.pf2e-reminders-prompt .form-fields {
+    align-items: center;
+    gap: 0.5em;
+}
+
+.pf2e-reminders-prompt [data-prompt-trigger] {
+    flex: 0 0 auto;
+}
+
+/* The trigger picker lists one trigger per row */
+.pf2e-reminders-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.pf2e-reminders-choice {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}

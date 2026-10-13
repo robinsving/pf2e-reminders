@@ -1,0 +1,45 @@
+{
+    "id": "pf2e-reminders",
+    "title": "PF2e Robin's Reminders",
+    "description": "Right-click a chat message to add a reminder that is shown when your turn comes around in the combat tracker. Useful for sustained spells and durations.",
+    "version": "0.1.0",
+    "authors": [
+        {
+            "name": "Robin Sving",
+            "email": "robin.sving@gmail.com",
+            "discord": "@.wigglemaster"
+        }
+    ],
+    "compatibility": {
+        "minimum": "14",
+        "verified": "14"
+    },
+    "esmodules": [
+        "reminders/entry-control.js"
+    ],
+    "styles": [
+        "styles/reminders.css"
+    ],
+    "languages": [
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "lang/en.json"
+        }
+    ],
+    "relationships": {
+        "systems": [
+            {
+                "id": "pf2e",
+                "type": "system",
+                "compatibility": {
+                    "minimum": "6.0.0"
+                }
+            }
+        ]
+    },
+    "url": "https://github.com/robinsving/pf2e-reminders",
+    "manifest": "https://github.com/robinsving/pf2e-reminders/releases/latest/download/module.json",
+    "download": "https://github.com/robinsving/pf2e-reminders/releases/latest/download/pf2e-reminders-release.zip",
+    "bugs": "https://github.com/robinsving/pf2e-reminders/issues"
+}
