@@ -6,7 +6,7 @@
     "added": "Reminder added: {text}",
     "chat": {
       "title": "Reminders",
-      "past": "Reminders for a past turn.",
+      "past": "These reminders are from earlier.",
       "remove": "Remove reminder",
       "custom": "Add a custom reminder",
       "add": "Add reminder",
@@ -43,7 +43,7 @@
     },
     "enabled": {
       "name": "Enable reminders",
-      "hint": "Turn all reminder features off for you: the chat menu entry, the sheet bells and button, and the turn messages. Your stored reminders are kept."
+      "hint": "Turn all reminder features off for you: the chat menu entry, the sheet bells and button, and the reminders messages. Your stored reminders are kept."
     },
     "itemTypes": {
       "name": "Item reminder bells",

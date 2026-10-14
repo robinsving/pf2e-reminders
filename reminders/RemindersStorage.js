@@ -76,7 +76,7 @@ export function findItemReminder(user, item, trigger = DEFAULT_TRIGGER) {
 }
 
 /**
- * Adds a reminder for an item (on its actor's turns) on the given trigger, or removes the one it already has
+ * Adds a reminder for an item (for its actor) on the given trigger, or removes the one it already has
  * for that trigger. Returns true when added.
  */
 export async function toggleItemReminder(user, item, trigger = DEFAULT_TRIGGER) {

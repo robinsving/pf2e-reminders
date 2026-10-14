@@ -36,7 +36,7 @@ function isLatestRemindersMessage(message) {
 
 /**
  * What the reminder list template needs for a reminders message: the user's reminders for its trigger and actor.
- * Only the newest message is active; older ones just say they are for a past turn.
+ * Only the newest message is active; older ones just say they are from earlier.
  */
 function messageListContext(message, { actorUuid, trigger }) {
     const superseded = !isLatestRemindersMessage(message);

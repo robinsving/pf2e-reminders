@@ -1,7 +1,7 @@
 {
     "name": "pf2e-reminders",
     "version": "0.1.0",
-    "description": "",
+    "description": "Private, per-user reminders for PF2e in Foundry VTT: on turn start and end, and when you hit, miss, or are hit or missed.",
     "license": "MIT",
     "private": true,
     "type": "module",

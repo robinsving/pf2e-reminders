@@ -44,7 +44,7 @@ Every item row on an actor sheet (feats, actions, spells, effects, ...) gets a b
 ![The reminder bell on an item row](assets/item-bell.webp)
 
 - The bell goes in the row's icon list on the right, also on NPC abilities and strikes.
-- The reminder belongs to that actor's turns, and its text opens the item sheet.
+- The reminder belongs to that actor and fires on the trigger you pick. Its text opens the item sheet.
 - **Item reminder bells** > **Choose item types** in the module settings lets you tick which kinds of items get a bell. By default only actions, afflictions, effects, feats and spells do; tick conditions, equipment and so on if you want them too. Some types can never have one: those the sheets show no icon list for (ancestry, background, class, heritage, deity, kits and campaign features), lore skills, and spellcasting entries such as "Arcane Prepared Spells". The choice is per browser; reopen open sheets to see a change. If you have saved a choice before, it is kept.
 - NPC sheets get no bells and no **Reminders** button (also not in the combat tracker menu) by default, and NPCs are left out of the chat menu's actor list. The GM can turn them on with the world setting **Reminders for NPCs**.
 
@@ -55,7 +55,7 @@ Open it from the **Reminders** button in the actor sheet header, or by right-cli
 
 - Reminders are on for every actor by default (nothing shows until you add one). Turn an actor off to keep its reminders stored but silent; this covers all triggers and is also per user.
 - For an unlinked token (most NPCs) the toggle only affects that token; for a linked token or an actor from the Actors tab it covers all tokens of the actor.
-- Reminders stored without an actor, left over from earlier versions, still show on all your turns until you remove them in **Manage reminders**.
+- Reminders stored without an actor, left over from earlier versions, still show for all your actors until you remove them in **Manage reminders**.
 
 ### 5. Manage all your reminders
 **Manage reminders** in the module settings lists all your stored reminders, grouped per actor or token in collapsed sections you can expand. You can remove single reminders, or all reminders of one actor, token or the leftover group without an actor with that heading's **Remove all**.

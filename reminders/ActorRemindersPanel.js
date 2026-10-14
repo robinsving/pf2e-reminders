@@ -7,7 +7,7 @@ import { showToggleState } from "./TitleBar";
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 /**
- * Window for viewing and editing your reminders for one actor and turning them on or off for its turns.
+ * Window for viewing and editing your reminders for one actor and turning them on or off for the actor.
  * It uses the same list template and button handlers as the reminders chat message.
  */
 export default class ActorRemindersPanel extends HandlebarsApplicationMixin(ApplicationV2) {
