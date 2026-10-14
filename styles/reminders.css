@@ -101,7 +101,8 @@ details[open] > .pf2e-reminders-summary .pf2e-reminders-chevron {
     font-size: var(--font-size-12, 12px);
 }
 
-h4 .pf2e-reminders-trigger {
+.pf2e-reminders-subheader {
+    margin: 0 0 0.5em;
     font-size: var(--font-size-12, 12px);
     opacity: 0.7;
 }

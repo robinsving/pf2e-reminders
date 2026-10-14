@@ -1,5 +1,5 @@
 <h4 class="pf2e-reminders-title">
-    <span>{{localize "REMINDERS.chat.title"}}{{#if triggerIcon}} <span class="pf2e-reminders-trigger" data-tooltip="{{triggerLabel}}"><i class="{{triggerIcon}}"></i></span>{{/if}}</span>
+    <span>{{localize "REMINDERS.chat.title"}}</span>
     {{#if hasActor}}
         <span class="pf2e-reminders-buttons">
             {{#if showList}}<a data-action="openReminders" data-tooltip="{{localize "REMINDERS.chat.showAll"}}"><i class="fa-solid fa-fw fa-bell"></i></a>{{/if}}
@@ -8,3 +8,6 @@
         </span>
     {{/if}}
 </h4>
+{{#if triggerIcon}}
+<p class="pf2e-reminders-subheader"><i class="{{triggerIcon}} fa-fw"></i> {{triggerLabel}}</p>
+{{/if}}

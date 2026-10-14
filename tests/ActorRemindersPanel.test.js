@@ -43,6 +43,7 @@ describe("ActorRemindersPanel", () => {
         expect(element.querySelector("h4 [data-action=openReminders]")).toBeNull();
         expect(element.querySelector("h4").classList.contains("pf2e-reminders-title")).toBe(true);
         expect(element.querySelector("h4 .pf2e-reminders-buttons")).not.toBeNull();
+        expect(element.querySelector(".pf2e-reminders-subheader")).toBeNull();
         expect(element.innerHTML).toContain("Aura &lt;b&gt;");
         expect(element.innerHTML).not.toContain("Other actor");
         expect(element.querySelectorAll("[data-action=removeOne]")).toHaveLength(1);

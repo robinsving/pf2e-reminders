@@ -30,7 +30,7 @@ Right-click any chat message (a spell card, an effect, a condition, ...) and pic
 - The entry is only offered when there is such an actor.
 
 ### 2. Get the reminders
-When a reminder fires, a private chat message lists your reminders for that trigger and actor. The title says which trigger it is, and each reminder has a trash icon to remove it. Nothing is posted if there is nothing to show.
+When a reminder fires, a private chat message lists your reminders for that trigger and actor. A subheader under the title shows the trigger as an icon and text, and each reminder has a trash icon to remove it. Nothing is posted if there is nothing to show.
 
 ![A reminders message after an attack that hit](assets/reminders-message.webp)
 
@@ -81,7 +81,7 @@ A reminder fires on a trigger. New reminders ask which one; reminders from earli
 
 ![The trigger popup](assets/trigger-picker.webp)
 
-- Each reminder in the actor's reminders window and in **Manage reminders** has its trigger icon. Hover it to see the trigger, click it to open a popup where you choose another. The title of a reminders message shows the trigger as an icon too.
+- Each reminder in the actor's reminders window and in **Manage reminders** has its trigger icon. Hover it to see the trigger, click it to open a popup where you choose another. The subheader of a reminders message shows the trigger as an icon and text too.
 - The custom reminder prompt (the **+**) has the same icon next to the text field, starting on the trigger of the list you opened it from.
 - The attack triggers fire right after a PF2e attack roll (strike or spell attack) against a target, as a private message like the turn ones. Hit and miss include their critical versions; critical hit and critical miss only fire on those.
 - Only actors you own count, and the roll needs a target: an attack without one has no outcome.

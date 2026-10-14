@@ -105,14 +105,15 @@ describe("renderRemindersMessage", () => {
             game.user = player;
         });
 
-        it("show only the turn end reminders and show the trigger as an icon with a tooltip", async () => {
+        it("show only the turn end reminders and show the trigger as an icon and text in a subheader", async () => {
             const html = await render(makeMessage("m1", true, "Actor.a", "turnEnd"));
             expect(html.querySelector("ul").textContent).toContain("At the end");
             expect(html.querySelector("ul").textContent).not.toContain("At the start");
-            const trigger = html.querySelector("h4 .pf2e-reminders-trigger");
-            expect(trigger.dataset.tooltip).toBe("REMINDERS.trigger.turnEnd");
-            expect(trigger.querySelector("i").className).toContain("fa-hourglass-end");
+            const subheader = html.querySelector("h4 + .pf2e-reminders-subheader");
+            expect(subheader.textContent).toContain("REMINDERS.trigger.turnEnd");
+            expect(subheader.querySelector("i").className).toContain("fa-hourglass-end");
             expect(html.querySelector("h4").textContent).not.toContain("REMINDERS.trigger");
+            expect(html.querySelector("h4 i.fa-hourglass-end")).toBeNull();
         });
 
         it("start the custom reminder prompt on the message's own trigger", async () => {
@@ -137,7 +138,7 @@ describe("renderRemindersMessage", () => {
 
     it("shows turn start messages without a trigger flag, as posted by older versions", async () => {
         const html = await render(makeMessage("m1"));
-        expect(html.querySelector("h4 .pf2e-reminders-trigger i").className).toContain("fa-hourglass-start");
+        expect(html.querySelector(".pf2e-reminders-subheader i").className).toContain("fa-hourglass-start");
     });
 
     it("says there are no reminders left once the last one is removed", async () => {
