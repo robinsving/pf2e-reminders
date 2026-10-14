@@ -1,6 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { addItemBells } from "../reminders/ItemBell";
 import { makeDoc, setSettings } from "./helpers";
+import { pickTrigger } from "../reminders/TriggerPicker";
+
+vi.mock("../reminders/TriggerPicker", () => ({ pickTrigger: vi.fn(async () => "turnStart") }));
 
 let actor;
 let item;
@@ -18,6 +21,7 @@ function makeHtml() {
 }
 
 beforeEach(() => {
+    vi.clearAllMocks();
     setSettings();
     user = makeDoc();
     game.user = user;
@@ -178,12 +182,41 @@ describe("addItemBells", () => {
         });
     });
 
-    it("makes a turn start reminder when clicked", async () => {
+    it("asks for a trigger, starting on turn start, and adds the reminder on the one picked", async () => {
+        pickTrigger.mockResolvedValueOnce("crit");
         const html = makeHtml();
         addItemBells(app, html);
         html.querySelector(".pf2e-reminders-item-bell").click();
         await vi.waitFor(() => expect(user.setFlag).toHaveBeenCalled());
-        expect(user.getFlag("pf2e-reminders", "reminders")[0].trigger).toBe("turnStart");
+        expect(pickTrigger).toHaveBeenCalledWith("turnStart");
+        expect(user.getFlag("pf2e-reminders", "reminders")[0].trigger).toBe("crit");
+    });
+
+    it("adds nothing when the trigger popup is closed", async () => {
+        pickTrigger.mockResolvedValueOnce(undefined);
+        const html = makeHtml();
+        addItemBells(app, html);
+        const bell = html.querySelector(".pf2e-reminders-item-bell");
+        bell.click();
+        await vi.waitFor(() => expect(pickTrigger).toHaveBeenCalled());
+        expect(user.setFlag).not.toHaveBeenCalled();
+        expect(bell.classList.contains("active")).toBe(false);
+    });
+
+    it("removes all the item's reminders, on any trigger, without asking, when the bell is active", async () => {
+        user = makeDoc([
+            { id: "a", itemUuid: item.uuid, actorUuid: "Actor.a", trigger: "turnEnd" },
+            { id: "b", itemUuid: item.uuid, actorUuid: "Actor.a", trigger: "hit" },
+            { id: "c", text: "Other", itemUuid: "Actor.a.Item.other" },
+        ]);
+        game.user = user;
+        const html = makeHtml();
+        addItemBells(app, html);
+        const bell = html.querySelector(".pf2e-reminders-item-bell");
+        bell.click();
+        await vi.waitFor(() => expect(bell.classList.contains("active")).toBe(false));
+        expect(pickTrigger).not.toHaveBeenCalled();
+        expect(user.getFlag("pf2e-reminders", "reminders").map((reminder) => reminder.id)).toEqual(["c"]);
     });
 
     it("adds no bells when the user has turned the module off", () => {

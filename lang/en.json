@@ -17,7 +17,7 @@
     },
     "gotoItem": "Open the item",
     "itemGone": "The item no longer exists.",
-    "itemBell": "Toggle reminder for this item",
+    "itemBell": "Add a reminder for this item, or remove its reminders",
     "manager": {
       "name": "Stored reminders",
       "label": "Manage reminders",

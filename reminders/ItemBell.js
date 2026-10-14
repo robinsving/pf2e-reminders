@@ -1,7 +1,9 @@
 import { getExcludedTypes } from "./ItemTypesSettings";
 import { showsReminderControls } from "./Availability";
 import { debug, error } from "./utilities/Utilities";
-import { findItemReminders, toggleItemReminder } from "./RemindersStorage";
+import { findItemReminders, removeReminders, toggleItemReminder } from "./RemindersStorage";
+import { pickTrigger } from "./TriggerPicker";
+import { DEFAULT_TRIGGER } from "./Triggers";
 
 function createBell(item) {
     const bell = document.createElement("a");
@@ -13,8 +15,16 @@ function createBell(item) {
         event.preventDefault();
         event.stopPropagation();
         try {
-            const added = await toggleItemReminder(game.user, item);
-            debug(`${added ? "Added" : "Removed"} reminder for item ${item.uuid}`);
+            const existing = findItemReminders(game.user, item);
+            if (existing.length) {
+                await removeReminders(game.user, existing.map((reminder) => reminder.id));
+                debug(`Removed reminder for item ${item.uuid}`);
+            } else {
+                const trigger = await pickTrigger(DEFAULT_TRIGGER);
+                if (!trigger) return;
+                await toggleItemReminder(game.user, item, trigger);
+                debug(`Added ${trigger} reminder for item ${item.uuid}`);
+            }
             bell.classList.toggle("active", findItemReminders(game.user, item).length > 0);
         } catch (e) {
             error(`Error toggling reminder for item ${item.uuid}`, e);
@@ -24,7 +34,7 @@ function createBell(item) {
 }
 
 /**
- * Adds a bell to every item row of an actor sheet; clicking it toggles a reminder for that item.
+ * Adds a bell to every item row of an actor sheet; clicking it removes the item's reminders, or asks for a trigger and adds one.
  * The bell goes in the row's icon list on the right: the item controls, or the controls of the abilities and
  * strikes on the NPC sheet. NPC sheets only get bells when the GM has turned that on in the settings.
  */
