@@ -70,11 +70,39 @@ describe("addItemBells", () => {
         ]);
     });
 
+    it("lets the icon column of spell rows fit the bell, so it does not end up behind the cast button", () => {
+        const html = document.createElement("div");
+        html.innerHTML = `<ol class="spell-list">
+            <li data-item-id="i"><button class="cast-spell"></button><div class="item-controls"><a data-action="edit-item"></a></div></li>
+        </ol><ul><li data-item-id="i"><div class="item-controls"></div></li></ul>`;
+        addItemBells(app, html);
+        const [spellRow, otherRow] = html.querySelectorAll("li");
+        expect(spellRow.style.getPropertyValue("--controls-width")).toBe("min-content");
+        expect(otherRow.style.getPropertyValue("--controls-width")).toBe("");
+        expect(spellRow.querySelector(".item-controls").firstElementChild.className).toBe("pf2e-reminders-item-bell");
+    });
+
     it("adds no bells for actors the user does not own", () => {
         actor.isOwner = false;
         const html = makeHtml();
         addItemBells(app, html);
         expect(html.querySelector(".pf2e-reminders-item-bell")).toBeNull();
+    });
+
+    it("adds no bell to the rank lines of a spell list, which carry the id of the spellcasting entry, but does to every spell row", () => {
+        const html = document.createElement("div");
+        html.innerHTML = `<ol class="spell-list">
+            <li class="header-row" data-item-id="i" data-item-type="spell-slot-group"><div class="item-controls"><a></a></div></li>
+            <li class="spell" data-item-id="i" data-item-type="spell"><div class="item-controls"><a></a></div></li>
+            <li class="spell virtual" data-item-id="i" data-item-type="spell-slot-group"><div class="item-controls"><a></a></div></li>
+        </ol>`;
+        addItemBells(app, html);
+        const [header, spell, virtualSpell] = html.querySelectorAll("li");
+        expect(header.querySelector(".pf2e-reminders-item-bell")).toBeNull();
+        expect(spell.querySelector(".pf2e-reminders-item-bell")).not.toBeNull();
+        // virtual spell rows are real spells, although the sheet gives them the type of the rank lines
+        expect(virtualSpell.querySelector(".pf2e-reminders-item-bell")).not.toBeNull();
+        expect(header.style.getPropertyValue("--controls-width")).toBe("");
     });
 
     it("adds no bell to spellcasting entries such as Arcane Prepared Spells", () => {

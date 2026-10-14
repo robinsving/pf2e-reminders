@@ -1,7 +1,7 @@
 {
     "id": "pf2e-reminders",
     "title": "PF2e Robin's Reminders",
-    "description": "Right-click a chat message to add a reminder that is shown when your turn comes around in the combat tracker. Useful for sustained spells and durations.",
+    "description": "Private, per-user reminders for sustained spells, auras and durations. Add them from a chat message, an item bell on the sheet or free text, and get them at turn start, turn end, or when you hit, miss, or are hit or missed.",
     "version": "0.1.0",
     "authors": [
         {
