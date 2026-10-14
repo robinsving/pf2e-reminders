@@ -12,7 +12,7 @@ export function makeDoc(reminders = [], extra = {}, flags = {}) {
     };
 }
 
-const DEFAULT_SETTINGS = { enabled: true, npcReminders: false, excludedItemTypes: ["spellcastingEntry"] };
+const DEFAULT_SETTINGS = { enabled: true, npcReminders: false, excludedItemTypes: [] };
 
 /**
  * Makes game.settings.get return the module's default values, with the given overrides.

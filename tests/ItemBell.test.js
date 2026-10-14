@@ -105,6 +105,13 @@ describe("addItemBells", () => {
         expect(header.style.getPropertyValue("--controls-width")).toBe("");
     });
 
+    it("adds no bell to lore skills", () => {
+        item.type = "lore";
+        const html = makeHtml();
+        addItemBells(app, html);
+        expect(html.querySelector(".pf2e-reminders-item-bell")).toBeNull();
+    });
+
     it("adds no bell to spellcasting entries such as Arcane Prepared Spells", () => {
         item.type = "spellcastingEntry";
         const html = makeHtml();
@@ -119,7 +126,7 @@ describe("addItemBells", () => {
         addItemBells(app, html);
         expect(html.querySelector(".pf2e-reminders-item-bell")).toBeNull();
 
-        item.type = "spellcastingEntry";
+        item.type = "spell";
         html = makeHtml();
         addItemBells(app, html);
         expect(html.querySelector(".pf2e-reminders-item-bell")).not.toBeNull();

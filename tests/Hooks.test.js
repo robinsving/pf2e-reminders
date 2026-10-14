@@ -186,7 +186,8 @@ describe("registerSettings", () => {
         registerSettings();
         expect(game.settings.register).toHaveBeenCalledWith("pf2e-reminders", "enabled", expect.objectContaining({ scope: "client", default: true }));
         expect(game.settings.register).toHaveBeenCalledWith("pf2e-reminders", "debugMode", expect.objectContaining({ default: false }));
-        expect(game.settings.register).toHaveBeenCalledWith("pf2e-reminders", "excludedItemTypes", expect.objectContaining({ config: false, default: ["spellcastingEntry"] }));
+        expect(game.settings.register).toHaveBeenCalledWith("pf2e-reminders", "excludedItemTypes", expect.objectContaining({ config: false, default: expect.not.arrayContaining(["action", "affliction", "effect", "feat", "spell"]) }));
+        expect(game.settings.register).toHaveBeenCalledWith("pf2e-reminders", "excludedItemTypes", expect.objectContaining({ default: expect.arrayContaining(["weapon", "condition"]) }));
         expect(game.settings.register).toHaveBeenCalledWith("pf2e-reminders", "npcReminders", expect.objectContaining({ scope: "world", default: false }));
         expect(game.settings.registerMenu).toHaveBeenCalledWith("pf2e-reminders", "storedRemindersMenu", expect.objectContaining({ restricted: false }));
         expect(game.settings.registerMenu).toHaveBeenCalledWith("pf2e-reminders", "itemTypesMenu", expect.objectContaining({ restricted: false }));

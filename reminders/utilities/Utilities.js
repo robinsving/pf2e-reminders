@@ -18,7 +18,11 @@ const settings = {
         scope: "client",
         config: false,
         type: Array,
-        default: ["spellcastingEntry"],
+        // everything but the types that mostly carry durations and effects: actions, afflictions, effects, feats and spells
+        default: [
+            "ammo", "armor", "backpack", "book", "condition", "consumable", "equipment", "melee",
+            "shield", "treasure", "weapon",
+        ],
     },
 
     npcReminders: {

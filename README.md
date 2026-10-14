@@ -45,7 +45,7 @@ Every item row on an actor sheet (feats, actions, spells, effects, ...) gets a b
 
 - The bell goes in the row's icon list on the right, also on NPC abilities and strikes.
 - The reminder belongs to that actor's turns, and its text opens the item sheet.
-- **Item reminder bells** > **Choose item types** in the module settings lets you tick which kinds of items get a bell (by default all except spellcasting entries such as "Arcane Prepared Spells"). The choice is per browser; reopen open sheets to see a change.
+- **Item reminder bells** > **Choose item types** in the module settings lets you tick which kinds of items get a bell. By default only actions, afflictions, effects, feats and spells do; tick conditions, equipment and so on if you want them too. Some types can never have one: those the sheets show no icon list for (ancestry, background, class, heritage, deity, kits and campaign features), lore skills, and spellcasting entries such as "Arcane Prepared Spells". The choice is per browser; reopen open sheets to see a change. If you have saved a choice before, it is kept.
 - NPC sheets get no bells and no **Reminders** button (also not in the combat tracker menu) by default, and NPCs are left out of the chat menu's actor list. The GM can turn them on with the world setting **Reminders for NPCs**.
 
 ### 4. The actor's reminders window

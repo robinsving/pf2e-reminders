@@ -2,8 +2,16 @@ import { TEMPLATES } from "./Templates";
 import { getSettings, settings } from "./utilities/Utilities";
 import { id as MODULE_ID } from "../module.json";
 
+/**
+ * Types that never get a bell: the sheets show no icon list for them (ancestry, background, class, heritage, deity,
+ * kits and campaign features), or the row is not something to be reminded of: a spellcasting entry such as
+ * "Arcane Prepared Spells" or a lore skill.
+ */
+export const UNSUPPORTED_TYPES = ["ancestry", "background", "campaignFeature", "class", "deity", "heritage", "kit", "lore", "spellcastingEntry"];
+
+/** The types without a bell: the ones the user unticked, plus the ones that can never have one. */
 export function getExcludedTypes() {
-    return getSettings(settings.excludedItemTypes);
+    return [...getSettings(settings.excludedItemTypes), ...UNSUPPORTED_TYPES];
 }
 
 function typeLabel(type) {
@@ -11,7 +19,8 @@ function typeLabel(type) {
 }
 
 /**
- * Settings menu window for choosing which item types get a reminder bell on actor sheets.
+ * Settings menu window for choosing which item types get a reminder bell on actor sheets. The ticked types are
+ * listed first, each group sorted by label.
  */
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -30,9 +39,9 @@ export default class ItemTypesSettings extends HandlebarsApplicationMixin(Applic
     async _prepareContext() {
         const excluded = getExcludedTypes();
         const types = game.documentTypes.Item
-            .filter((type) => type !== "base")
+            .filter((type) => type !== "base" && !UNSUPPORTED_TYPES.includes(type))
             .map((type) => ({ type, label: typeLabel(type), checked: !excluded.includes(type) }))
-            .sort((a, b) => a.label.localeCompare(b.label));
+            .sort((a, b) => Number(b.checked) - Number(a.checked) || a.label.localeCompare(b.label));
         return { types };
     }
 
