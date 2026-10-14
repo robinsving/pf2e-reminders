@@ -5,7 +5,7 @@ Private, per-user reminders for Pathfinder 2e in Foundry VTT. Get reminded of su
 ## What It Does
 - Adds a reminder from a chat message, an item on an actor sheet, or free text
 - Posts your reminders as a private chat message (whispered only to you) when they fire
-- Fires on **turn start**, **turn end**, or one of eight attack triggers (hit, critical hit, miss, ... for you or against you)
+- Fires on **turn start**, **turn end**, or one of fourteen roll triggers (hit, critical hit, miss, ... for you or against you, and saving throws)
 - Stores everything per user: private to you, kept between encounters until you remove it
 - Lets you turn reminders off per actor, or for the whole module
 
@@ -78,13 +78,18 @@ A reminder fires on a trigger. New reminders ask which one; reminders from earli
 | you are critically hit | broken heart | when an attack against the actor critically hits |
 | you are missed | running person | when an attack against the actor misses or critically misses |
 | you are critically missed | shield with a person | when an attack against the actor critically misses |
+| you succeed at a save | check mark | when the actor succeeds or critically succeeds at a saving throw |
+| you critically succeed at a save | trophy | when the actor critically succeeds at a saving throw |
+| you fail a save | cross | when the actor fails or critically fails a saving throw |
+| you critically fail a save | skull | when the actor critically fails a saving throw |
 
 ![The trigger popup](assets/trigger-picker.webp)
 
+- The popup has a tab for each group of triggers: **Turn**, **Attacks** and **Saving throws**. It opens on the tab of the reminder's current trigger.
 - Each reminder in the actor's reminders window and in **Manage reminders** has its trigger icon. Hover it to see the trigger, click it to open a popup where you choose another. The subheader of a reminders message shows the trigger as an icon and text too.
 - The custom reminder prompt (the **+**) has the same icon next to the text field, starting on the trigger of the list you opened it from.
-- The attack triggers fire right after a PF2e attack roll (strike or spell attack) against a target, as a private message like the turn ones. Hit and miss include their critical versions; critical hit and critical miss only fire on those.
-- Only actors you own count, and the roll needs a target: an attack without one has no outcome.
+- The roll triggers fire right after a PF2e attack roll (strike or spell attack) or saving throw, as a private message like the turn ones. Hit and miss include their critical versions; critical hit and critical miss only fire on those. Succeeding at a save and failing a save include their critical versions, like hit and miss.
+- Only actors you own count. The roll needs an outcome: an attack needs a target, and a save needs a DC (as when rolled from a spell card or a save button in chat). A plain save with no DC has no outcome and fires nothing.
 - A reroll that changes the outcome does not fire anything.
 
 ## Settings
@@ -97,7 +102,7 @@ A reminder fires on a trigger. New reminders ask which one; reminders from earli
 ## Troubleshooting
 - The module always logs to the browser console when it registers its hooks and when it has initialized and is ready.
 - Turn on **Debug logging** to also print a summary at startup (version, settings, number of stored reminders, registered hooks), template loading, every change to your stored reminders, and each reminders message that is posted.
-- If there is no bell or **Reminders** button for an NPC, check the world setting **Reminders for NPCs**. If an attack trigger does not fire, check that the attack had a target and that you own the actor.
+- If there is no bell or **Reminders** button for an NPC, check the world setting **Reminders for NPCs**. If a roll trigger does not fire, check that the attack had a target (or the save a DC) and that you own the actor.
 
 ## Development
 - Test suite: `npm test`

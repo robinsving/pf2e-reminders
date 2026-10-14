@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { attackTriggersOf, DEFAULT_TRIGGER, supersedeGroup, getTrigger, triggerIcon, TRIGGERS, TRIGGERS_IN_FIRING_ORDER, triggerLabel, triggerOf } from "../reminders/Triggers";
+import { TRIGGER_GROUPS, checkTriggersOf, DEFAULT_TRIGGER, supersedeGroup, getTrigger, triggerIcon, TRIGGERS, TRIGGERS_IN_FIRING_ORDER, triggerLabel, triggerOf } from "../reminders/Triggers";
 
 const combat = { combatants: { get: (id) => ({ id }) } };
 const previous = { combatantId: "prev" };
@@ -18,7 +18,12 @@ describe("triggers", () => {
 
     it("fires the end of a turn before the start of the next", () => {
         expect(TRIGGERS_IN_FIRING_ORDER.map((trigger) => trigger.id)).toEqual(["turnEnd", "turnStart"]);
-        expect(TRIGGERS.map((trigger) => trigger.id)).toEqual(["turnStart", "turnEnd", "hit", "crit", "miss", "critMiss", "wasHit", "wasCritted", "wasMissed", "wasCritMissed"]);
+        expect(TRIGGERS.map((trigger) => trigger.id)).toEqual(["turnStart", "turnEnd", "hit", "crit", "miss", "critMiss", "wasHit", "wasCritted", "wasMissed", "wasCritMissed", "saveSuccess", "saveCritSuccess", "saveFailure", "saveCritFailure"]);
+    });
+
+    it("puts every trigger in a known group, with the groups in the order of the triggers", () => {
+        expect(TRIGGERS.every((trigger) => TRIGGER_GROUPS.includes(trigger.group))).toBe(true);
+        expect([...new Set(TRIGGERS.map((trigger) => trigger.group))]).toEqual(TRIGGER_GROUPS);
     });
 
     it("treats reminders without a trigger as the default and unknown ids as the default trigger", () => {
@@ -38,7 +43,7 @@ describe("triggers", () => {
     });
 });
 
-describe("attack triggers", () => {
+describe("check triggers", () => {
     const roll = (outcome, extra = {}) => ({
         type: "attack-roll",
         outcome,
@@ -46,12 +51,12 @@ describe("attack triggers", () => {
         target: { actor: "Actor.defender", token: "Scene.s.Token.d" },
         ...extra,
     });
-    const ids = (context) => attackTriggersOf(context).map(({ trigger }) => trigger.id);
+    const ids = (context) => checkTriggersOf(context).map(({ trigger }) => trigger.id);
 
     it("a hit fires hit for the attacker and was hit for the target", () => {
         expect(ids(roll("success"))).toEqual(["hit", "wasHit"]);
-        expect(attackTriggersOf(roll("success")).map(({ actorUuid }) => actorUuid)).toEqual(["Actor.attacker", "Actor.defender"]);
-        expect(attackTriggersOf(roll("success"))[0].tokenUuid).toBe("Scene.s.Token.a");
+        expect(checkTriggersOf(roll("success")).map(({ actorUuid }) => actorUuid)).toEqual(["Actor.attacker", "Actor.defender"]);
+        expect(checkTriggersOf(roll("success"))[0].tokenUuid).toBe("Scene.s.Token.a");
     });
 
     it("a critical hit fires the hit and the critical hit triggers on both sides", () => {
@@ -66,14 +71,45 @@ describe("attack triggers", () => {
         expect(ids(roll("criticalFailure"))).toEqual(["miss", "critMiss", "wasMissed", "wasCritMissed"]);
     });
 
-    it("ignores rolls that are not attacks and rolls without an outcome", () => {
-        expect(ids(roll("success", { type: "saving-throw" }))).toEqual([]);
+    it("ignores rolls that are not attacks or saves and rolls without an outcome", () => {
+        expect(ids(roll("success", { type: "skill-check" }))).toEqual([]);
         expect(ids(roll(null))).toEqual([]);
         expect(ids(undefined)).toEqual([]);
     });
 
     it("skips a side the roll has no actor for, as when nothing was targeted", () => {
         expect(ids(roll("success", { target: null }))).toEqual(["hit"]);
+    });
+
+    describe("saving throws", () => {
+        const save = (outcome, extra = {}) => ({
+            type: "saving-throw",
+            outcome,
+            origin: { actor: "Actor.caster", token: "Scene.s.Token.c" },
+            target: { actor: "Actor.saver", token: "Scene.s.Token.s" },
+            ...extra,
+        });
+
+        it("a success fires save success, and a critical success also the critical one, for the one who saved, not for the caster", () => {
+            expect(ids(save("success"))).toEqual(["saveSuccess"]);
+            expect(ids(save("criticalSuccess"))).toEqual(["saveSuccess", "saveCritSuccess"]);
+            expect(checkTriggersOf(save("success"))[0]).toMatchObject({ actorUuid: "Actor.saver", tokenUuid: "Scene.s.Token.s" });
+        });
+
+        it("a failure fires save failure, and a critical failure also the critical one", () => {
+            expect(ids(save("failure"))).toEqual(["saveFailure"]);
+            expect(ids(save("criticalFailure"))).toEqual(["saveFailure", "saveCritFailure"]);
+        });
+
+        it("fires nothing for a save without a DC, which has no outcome, or without an actor", () => {
+            expect(ids(save(null))).toEqual([]);
+            expect(ids(save("failure", { target: null }))).toEqual([]);
+        });
+
+        it("keeps attack and save triggers apart", () => {
+            expect(ids(roll("failure"))).not.toContain("saveFailure");
+            expect(ids(save("success"))).not.toContain("wasHit");
+        });
     });
 
     it("groups all turn triggers together and every attack trigger on its own", () => {

@@ -287,6 +287,13 @@ describe("onCreateChatMessage", () => {
         expect(createRemindersMessage).toHaveBeenCalledWith({ actor: owned, token: undefined }, "wasHit");
     });
 
+    it("posts save reminders for the actor that rolled the save", async () => {
+        remindersFlag([{ id: "s", text: "Resist", actorUuid: "Actor.a", trigger: "saveFailure" }]);
+        await onCreateChatMessage({ flags: { pf2e: { context: { type: "saving-throw", outcome: "failure", origin: { actor: "Actor.g" }, target: { actor: "Actor.a" } } } } });
+        expect(createRemindersMessage).toHaveBeenCalledTimes(1);
+        expect(createRemindersMessage).toHaveBeenCalledWith({ actor: owned, token: undefined }, "saveFailure");
+    });
+
     it("posts nothing for a miss, actors the user does not own or other message types", async () => {
         await onCreateChatMessage(attack("failure"));
         await onCreateChatMessage(attack("success", "Actor.g", "Actor.g"));

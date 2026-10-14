@@ -73,6 +73,15 @@
       "wasCritted": "you are critically hit",
       "wasMissed": "you are missed",
       "wasCritMissed": "you are critically missed",
+      "saveSuccess": "you succeed at a save",
+      "saveCritSuccess": "you critically succeed at a save",
+      "saveFailure": "you fail a save",
+      "saveCritFailure": "you critically fail a save",
+      "group": {
+        "turn": "Turn",
+        "attack": "Attacks",
+        "save": "Saving throws"
+      },
       "toggle": "Fires on: {trigger}. Click to choose another trigger.",
       "choose": "Choose a trigger",
       "select": "Select"

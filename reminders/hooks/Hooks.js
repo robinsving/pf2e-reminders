@@ -10,7 +10,7 @@ import { debug, error, getSettings, info, popup, registerSettings as registerSet
 import { createRemindersMessage, renderRemindersMessage } from "../RemindersMessage";
 import { loadTemplates } from "../Templates";
 import { pickTrigger } from "../TriggerPicker";
-import { attackTriggersOf, DEFAULT_TRIGGER, TRIGGERS_IN_FIRING_ORDER } from "../Triggers";
+import { checkTriggersOf, DEFAULT_TRIGGER, TRIGGERS_IN_FIRING_ORDER } from "../Triggers";
 
 function slotLabel(target) {
     return game.i18n.format("REMINDERS.AddReminder", { actor: target.name });
@@ -72,12 +72,12 @@ export async function onCombatTurnChange(combat, previous, current) {
 }
 
 /**
- * Fires the hit and critical hit reminders of an attack roll message, both for the attacker and for the target.
+ * Fires the reminders of an attack roll or saving throw message: for the attacker and the target, or for the one saving.
  * Each client only posts for actors it owns.
  */
 export async function onCreateChatMessage(message) {
     if (!isModuleEnabled()) return;
-    for (const { trigger, actorUuid, tokenUuid } of attackTriggersOf(message.flags?.pf2e?.context)) {
+    for (const { trigger, actorUuid, tokenUuid } of checkTriggersOf(message.flags?.pf2e?.context)) {
         try {
             const actor = fromUuidSync(actorUuid);
             if (!actor || !isTurnOfUser(actor, game.user)) continue;

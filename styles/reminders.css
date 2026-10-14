@@ -130,6 +130,24 @@ details[open] > .pf2e-reminders-summary .pf2e-reminders-chevron {
     gap: 0.25rem;
 }
 
+.pf2e-reminders-picker .tabs {
+    margin-bottom: 0.5rem;
+}
+
+/* The tab that holds the selected trigger: orange like the selected radio, and underlined for themes where
+   colour alone is hard to see. */
+.pf2e-reminders-picker .tabs .pf2e-reminders-has-choice {
+    color: var(--color-warm-1, orange);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+}
+
+.pf2e-reminders-choices {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
 .pf2e-reminders-choice {
     display: flex;
     align-items: center;

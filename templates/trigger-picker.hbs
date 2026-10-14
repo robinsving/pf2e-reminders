@@ -1,9 +1,20 @@
 <div class="pf2e-reminders-picker">
-    {{#each triggers}}
-        <label class="pf2e-reminders-choice">
-            <input type="radio" name="trigger" value="{{id}}"{{#if selected}} checked{{/if}}>
-            <i class="{{icon}} fa-fw"></i>
-            <span>{{label}}</span>
-        </label>
+    <nav class="tabs">
+        {{#each groups}}
+            <button type="button" class="{{#if active}}active pf2e-reminders-has-choice{{/if}}" data-action="tab" data-group="triggers" data-tab="{{id}}">{{label}}</button>
+        {{/each}}
+    </nav>
+    {{#each groups}}
+        <div class="tab{{#if active}} active{{/if}}" data-group="triggers" data-tab="{{id}}">
+            <div class="pf2e-reminders-choices">
+                {{#each triggers}}
+                    <label class="pf2e-reminders-choice">
+                        <input type="radio" name="trigger" value="{{id}}"{{#if selected}} checked{{/if}}>
+                        <i class="{{icon}} fa-fw"></i>
+                        <span>{{label}}</span>
+                    </label>
+                {{/each}}
+            </div>
+        </div>
     {{/each}}
 </div>
