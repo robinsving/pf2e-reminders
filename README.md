@@ -5,7 +5,7 @@ Private, per-user reminders for Pathfinder 2e in Foundry VTT. Get reminded of su
 ## What It Does
 - Adds a reminder from a chat message, an item on an actor sheet, or free text
 - Posts your reminders as a private chat message (whispered only to you) when they fire
-- Fires on **turn start**, **turn end**, or one of fourteen roll triggers (hit, critical hit, miss, ... for you or against you, and saving throws)
+- Fires on **turn start**, **turn end**, or one of sixteen roll triggers: attacks and saving throws by you or against you, each in the four degrees of success (critical success, success, failure, critical failure)
 - Stores everything per user: private to you, kept between encounters until you remove it
 - Lets you turn reminders off per actor, or for the whole module
 
@@ -66,30 +66,33 @@ Open it from the **Reminders** button in the actor sheet header, or by right-cli
 ## Triggers
 A reminder fires on a trigger. New reminders ask which one; reminders from earlier versions have no trigger and count as turn start.
 
-| Trigger | Icon | Fires |
+| Trigger type | Icon | Fires |
 |---|---|---|
-| turn start (default) | hourglass, start | at the start of the actor's turn |
-| turn end | hourglass, end | at the end of the actor's turn |
-| you hit | crosshair | when the actor's attack hits or critically hits |
-| you critically hit | bullseye | when the actor's attack critically hits |
-| you miss | wind | when the actor's attack misses or critically misses |
-| you critically miss | dizzy face | when the actor's attack critically misses |
-| you are hit | shield | when an attack against the actor hits or critically hits |
-| you are critically hit | broken heart | when an attack against the actor critically hits |
-| you are missed | running person | when an attack against the actor misses or critically misses |
-| you are critically missed | shield with a person | when an attack against the actor critically misses |
-| you succeed at a save | check mark | when the actor succeeds or critically succeeds at a saving throw |
-| you critically succeed at a save | trophy | when the actor critically succeeds at a saving throw |
-| you fail a save | cross | when the actor fails or critically fails a saving throw |
-| you critically fail a save | skull | when the actor critically fails a saving throw |
+| Turn start (default) | hourglass, start | at the start of the actor's turn |
+| Turn end | hourglass, end | at the end of the actor's turn |
+| You attack | crosshair | right after the actor's attack roll |
+| You are attacked | shield | right after an attack roll against the actor |
+| You save | heartbeat | right after the actor rolls a saving throw |
+| Someone saves against you | wand | right after someone rolls a saving throw against the actor |
+
+The four attack and save types each come in the four degrees of success, which gives 16 triggers (18 with the two turn ones). You pick the degree together with the type, for example "you critically hit" or "someone fails a save against you". The icon says what happened and the colour how it went, in PF2e's own colours for the degrees:
+
+| Degree | Colour | Fires on | Reads as |
+|---|---|---|---|
+| Critical success | green | a critical success only | you critically hit, you are critically hit, you critically succeed at a save, someone critically succeeds at a save against you |
+| Success | blue | a success or a critical success | you hit, you are hit, you succeed at a save, someone succeeds at a save against you |
+| Failure | orange | a failure or a critical failure | you miss, you are missed, you fail a save, someone fails a save against you |
+| Critical failure | red | a critical failure only | you critically miss, you are critically missed, you critically fail a save, someone critically fails a save against you |
+
+So a reminder on a plain success also fires on a critical success, and one on a plain failure also fires on a critical failure, while the critical triggers fire only on their own degree.
 
 ![The trigger popup](assets/trigger-picker.webp)
 
-- The popup has a tab for each group of triggers: **Turn**, **Attacks** and **Saving throws**. It opens on the tab of the reminder's current trigger.
-- Each reminder in the actor's reminders window and in **Manage reminders** has its trigger icon. Hover it to see the trigger, click it to open a popup where you choose another. The subheader of a reminders message shows the trigger as an icon and text too.
+- The popup has a tab for each group of triggers: **Turn**, **Attacks** and **Saving throws**. It opens on the tab of the reminder's current trigger. Within the **Attacks** and **Saving throws** tabs the triggers are grouped by who the roll concerns: **You attack** and **You are attacked**, **You save** and **Someone saves against you**.
+- Each reminder in the actor's reminders window and in **Manage reminders** has its trigger icon, without the outcome colour. Hover it to see the trigger, click it to open a popup where you choose another. The subheader of a reminders message shows the trigger as an icon and text too.
 - The custom reminder prompt (the **+**) has the same icon next to the text field, starting on the trigger of the list you opened it from.
-- The roll triggers fire right after a PF2e attack roll (strike or spell attack) or saving throw, as a private message like the turn ones. Hit and miss include their critical versions; critical hit and critical miss only fire on those. Succeeding at a save and failing a save include their critical versions, like hit and miss.
-- Only actors you own count. The roll needs an outcome: an attack needs a target, and a save needs a DC (as when rolled from a spell card or a save button in chat). A plain save with no DC has no outcome and fires nothing.
+- The roll triggers fire right after a PF2e attack roll (strike or spell attack) or saving throw, as a private message like the turn ones.
+- Only actors you own count. The roll needs an outcome: an attack needs a target, and a save needs a DC (as when rolled from a spell card or a save button in chat). A plain save with no DC has no outcome and fires nothing. "Against you" needs the source of the save to be known, which is the case when the save is rolled from a spell card or effect.
 - A reroll that changes the outcome does not fire anything.
 
 ## Settings

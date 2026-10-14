@@ -6,15 +6,18 @@
     </nav>
     {{#each groups}}
         <div class="tab{{#if active}} active{{/if}}" data-group="triggers" data-tab="{{id}}">
-            <div class="pf2e-reminders-choices">
-                {{#each triggers}}
-                    <label class="pf2e-reminders-choice">
-                        <input type="radio" name="trigger" value="{{id}}"{{#if selected}} checked{{/if}}>
-                        <i class="{{icon}} fa-fw"></i>
-                        <span>{{label}}</span>
-                    </label>
-                {{/each}}
-            </div>
+            {{#each sections}}
+                {{#if label}}<h4 class="pf2e-reminders-subgroup">{{label}}</h4>{{/if}}
+                <div class="pf2e-reminders-choices">
+                    {{#each triggers}}
+                        <label class="pf2e-reminders-choice">
+                            <input type="radio" name="trigger" value="{{id}}"{{#if selected}} checked{{/if}}>
+                            <span>{{label}}</span>
+                            <i class="{{icon}} fa-fw"></i>
+                        </label>
+                    {{/each}}
+                </div>
+            {{/each}}
         </div>
     {{/each}}
 </div>

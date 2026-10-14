@@ -2,8 +2,36 @@
  * The moments a reminder can fire on. Turn triggers say which combatant they concern, given what Foundry reports
  * for a turn change: the previous and the current combat state. Check triggers fire on a PF2e attack roll or
  * saving throw message and say which side of the roll they concern (the origin or the target) and which outcomes
- * count. For a saving throw the target is the one who rolled the save.
+ * count. For a saving throw the target is the one who rolled the save and the origin the source of the effect.
  */
+/**
+ * The icon says what happened and the colour how it went: one icon for each kind of event, in PF2e's own colours for
+ * the degrees of success (see the stylesheet).
+ */
+const CATEGORY_ICONS = {
+    hitting: "fa-crosshairs",
+    gettingHit: "fa-shield-halved",
+    saving: "fa-heart-pulse",
+    savedAgainst: "fa-wand-sparkles",
+};
+
+/** The headings the triggers of a roll are listed under within their tab, by who the roll concerns. */
+export const TRIGGER_CATEGORY_LABELS = {
+    hitting: "REMINDERS.trigger.category.hitting",
+    gettingHit: "REMINDERS.trigger.category.gettingHit",
+    saving: "REMINDERS.trigger.category.saving",
+    savedAgainst: "REMINDERS.trigger.category.savedAgainst",
+};
+
+const OUTCOME_CLASSES = {
+    success: "pf2e-reminders-success",
+    criticalSuccess: "pf2e-reminders-critical-success",
+    failure: "pf2e-reminders-failure",
+    criticalFailure: "pf2e-reminders-critical-failure",
+};
+
+const outcomeIcon = (category, outcome) => `fa-solid ${CATEGORY_ICONS[category]} ${OUTCOME_CLASSES[outcome]}`;
+
 export const TRIGGERS = [
     {
         id: "turnStart",
@@ -24,24 +52,26 @@ export const TRIGGERS = [
         combatantOf: (combat, previous) => combat.combatants.get(previous?.combatantId),
     },
     {
-        id: "hit",
-        kind: "check",
-        group: "attack",
-        rollType: "attack-roll",
-        label: "REMINDERS.trigger.hit",
-        icon: "fa-solid fa-crosshairs",
-        side: "origin",
-        outcomes: ["success", "criticalSuccess"],
-    },
-    {
         id: "crit",
         kind: "check",
         group: "attack",
         rollType: "attack-roll",
         label: "REMINDERS.trigger.crit",
-        icon: "fa-solid fa-bullseye",
+        category: "hitting",
+        icon: outcomeIcon("hitting", "criticalSuccess"),
         side: "origin",
         outcomes: ["criticalSuccess"],
+    },
+    {
+        id: "hit",
+        kind: "check",
+        group: "attack",
+        rollType: "attack-roll",
+        label: "REMINDERS.trigger.hit",
+        category: "hitting",
+        icon: outcomeIcon("hitting", "success"),
+        side: "origin",
+        outcomes: ["success", "criticalSuccess"],
     },
     {
         id: "miss",
@@ -49,7 +79,8 @@ export const TRIGGERS = [
         group: "attack",
         rollType: "attack-roll",
         label: "REMINDERS.trigger.miss",
-        icon: "fa-solid fa-wind",
+        category: "hitting",
+        icon: outcomeIcon("hitting", "failure"),
         side: "origin",
         outcomes: ["failure", "criticalFailure"],
     },
@@ -59,19 +90,10 @@ export const TRIGGERS = [
         group: "attack",
         rollType: "attack-roll",
         label: "REMINDERS.trigger.critMiss",
-        icon: "fa-solid fa-face-dizzy",
+        category: "hitting",
+        icon: outcomeIcon("hitting", "criticalFailure"),
         side: "origin",
         outcomes: ["criticalFailure"],
-    },
-    {
-        id: "wasHit",
-        kind: "check",
-        group: "attack",
-        rollType: "attack-roll",
-        label: "REMINDERS.trigger.wasHit",
-        icon: "fa-solid fa-shield-halved",
-        side: "target",
-        outcomes: ["success", "criticalSuccess"],
     },
     {
         id: "wasCritted",
@@ -79,9 +101,21 @@ export const TRIGGERS = [
         group: "attack",
         rollType: "attack-roll",
         label: "REMINDERS.trigger.wasCritted",
-        icon: "fa-solid fa-heart-crack",
+        category: "gettingHit",
+        icon: outcomeIcon("gettingHit", "criticalSuccess"),
         side: "target",
         outcomes: ["criticalSuccess"],
+    },
+    {
+        id: "wasHit",
+        kind: "check",
+        group: "attack",
+        rollType: "attack-roll",
+        label: "REMINDERS.trigger.wasHit",
+        category: "gettingHit",
+        icon: outcomeIcon("gettingHit", "success"),
+        side: "target",
+        outcomes: ["success", "criticalSuccess"],
     },
     {
         id: "wasMissed",
@@ -89,7 +123,8 @@ export const TRIGGERS = [
         group: "attack",
         rollType: "attack-roll",
         label: "REMINDERS.trigger.wasMissed",
-        icon: "fa-solid fa-person-running",
+        category: "gettingHit",
+        icon: outcomeIcon("gettingHit", "failure"),
         side: "target",
         outcomes: ["failure", "criticalFailure"],
     },
@@ -99,19 +134,10 @@ export const TRIGGERS = [
         group: "attack",
         rollType: "attack-roll",
         label: "REMINDERS.trigger.wasCritMissed",
-        icon: "fa-solid fa-user-shield",
+        category: "gettingHit",
+        icon: outcomeIcon("gettingHit", "criticalFailure"),
         side: "target",
         outcomes: ["criticalFailure"],
-    },
-    {
-        id: "saveSuccess",
-        kind: "check",
-        group: "save",
-        rollType: "saving-throw",
-        label: "REMINDERS.trigger.saveSuccess",
-        icon: "fa-solid fa-circle-check",
-        side: "target",
-        outcomes: ["success", "criticalSuccess"],
     },
     {
         id: "saveCritSuccess",
@@ -119,9 +145,21 @@ export const TRIGGERS = [
         group: "save",
         rollType: "saving-throw",
         label: "REMINDERS.trigger.saveCritSuccess",
-        icon: "fa-solid fa-trophy",
+        category: "saving",
+        icon: outcomeIcon("saving", "criticalSuccess"),
         side: "target",
         outcomes: ["criticalSuccess"],
+    },
+    {
+        id: "saveSuccess",
+        kind: "check",
+        group: "save",
+        rollType: "saving-throw",
+        label: "REMINDERS.trigger.saveSuccess",
+        category: "saving",
+        icon: outcomeIcon("saving", "success"),
+        side: "target",
+        outcomes: ["success", "criticalSuccess"],
     },
     {
         id: "saveFailure",
@@ -129,7 +167,8 @@ export const TRIGGERS = [
         group: "save",
         rollType: "saving-throw",
         label: "REMINDERS.trigger.saveFailure",
-        icon: "fa-solid fa-circle-xmark",
+        category: "saving",
+        icon: outcomeIcon("saving", "failure"),
         side: "target",
         outcomes: ["failure", "criticalFailure"],
     },
@@ -139,8 +178,53 @@ export const TRIGGERS = [
         group: "save",
         rollType: "saving-throw",
         label: "REMINDERS.trigger.saveCritFailure",
-        icon: "fa-solid fa-skull",
+        category: "saving",
+        icon: outcomeIcon("saving", "criticalFailure"),
         side: "target",
+        outcomes: ["criticalFailure"],
+    },
+    {
+        id: "saveAgainstCritSuccess",
+        kind: "check",
+        group: "save",
+        rollType: "saving-throw",
+        label: "REMINDERS.trigger.saveAgainstCritSuccess",
+        category: "savedAgainst",
+        icon: outcomeIcon("savedAgainst", "criticalSuccess"),
+        side: "origin",
+        outcomes: ["criticalSuccess"],
+    },
+    {
+        id: "saveAgainstSuccess",
+        kind: "check",
+        group: "save",
+        rollType: "saving-throw",
+        label: "REMINDERS.trigger.saveAgainstSuccess",
+        category: "savedAgainst",
+        icon: outcomeIcon("savedAgainst", "success"),
+        side: "origin",
+        outcomes: ["success", "criticalSuccess"],
+    },
+    {
+        id: "saveAgainstFailure",
+        kind: "check",
+        group: "save",
+        rollType: "saving-throw",
+        label: "REMINDERS.trigger.saveAgainstFailure",
+        category: "savedAgainst",
+        icon: outcomeIcon("savedAgainst", "failure"),
+        side: "origin",
+        outcomes: ["failure", "criticalFailure"],
+    },
+    {
+        id: "saveAgainstCritFailure",
+        kind: "check",
+        group: "save",
+        rollType: "saving-throw",
+        label: "REMINDERS.trigger.saveAgainstCritFailure",
+        category: "savedAgainst",
+        icon: outcomeIcon("savedAgainst", "criticalFailure"),
+        side: "origin",
         outcomes: ["criticalFailure"],
     },
 ];
@@ -192,4 +276,9 @@ export function triggerLabel(id) {
 
 export function triggerIcon(id) {
     return getTrigger(id).icon;
+}
+
+/** The icon of a trigger without its outcome colour, for lists that show every trigger the same way. */
+export function triggerIconPlain(id) {
+    return triggerIcon(id).split(" ").filter((name) => !name.startsWith("pf2e-reminders-")).join(" ");
 }

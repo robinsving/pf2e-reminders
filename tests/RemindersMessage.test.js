@@ -114,6 +114,9 @@ describe("renderRemindersMessage", () => {
             expect(subheader.querySelector("i").className).toContain("fa-hourglass-end");
             expect(html.querySelector("h4").textContent).not.toContain("REMINDERS.trigger");
             expect(html.querySelector("h4 i.fa-hourglass-end")).toBeNull();
+            // the text is dimmed, the icon is not, so it keeps the exact colour of its outcome
+            expect(subheader.querySelector(".pf2e-reminders-subheader-text").textContent).toBe("REMINDERS.trigger.turnEnd");
+            expect(subheader.querySelector("i").closest(".pf2e-reminders-subheader-text")).toBeNull();
         });
 
         it("start the custom reminder prompt on the message's own trigger", async () => {

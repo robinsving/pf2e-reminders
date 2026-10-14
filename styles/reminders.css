@@ -104,6 +104,10 @@ details[open] > .pf2e-reminders-summary .pf2e-reminders-chevron {
 .pf2e-reminders-subheader {
     margin: 0 0 0.5em;
     font-size: var(--font-size-12, 12px);
+}
+
+/* Only the text is dimmed, so the icon keeps its exact outcome colour */
+.pf2e-reminders-subheader-text {
     opacity: 0.7;
 }
 
@@ -142,6 +146,16 @@ details[open] > .pf2e-reminders-summary .pf2e-reminders-chevron {
     text-underline-offset: 0.2em;
 }
 
+.pf2e-reminders-subgroup {
+    margin: 0.5em 0 0.25em;
+    font-size: var(--font-size-12, 12px);
+    opacity: 0.7;
+}
+
+.tab > .pf2e-reminders-subgroup:first-child {
+    margin-top: 0;
+}
+
 .pf2e-reminders-choices {
     display: flex;
     flex-direction: column;
@@ -153,4 +167,26 @@ details[open] > .pf2e-reminders-summary .pf2e-reminders-chevron {
     align-items: center;
     gap: 0.5rem;
     cursor: pointer;
+}
+
+/* The icon goes at the right edge of the row, after the text */
+.pf2e-reminders-choice i {
+    margin-left: auto;
+}
+
+/* PF2e's colours for the degrees of success, with their values as fallback for themes that do not define them */
+.pf2e-reminders-critical-success {
+    color: var(--color-pf-text-critical-success, rgb(0, 128, 0));
+}
+
+.pf2e-reminders-success {
+    color: var(--color-pf-text-success, rgb(0, 0, 255));
+}
+
+.pf2e-reminders-failure {
+    color: var(--color-pf-text-failure, rgb(255, 69, 0));
+}
+
+.pf2e-reminders-critical-failure {
+    color: var(--color-pf-text-critical-failure, rgb(255, 0, 0));
 }

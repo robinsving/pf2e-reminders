@@ -77,6 +77,16 @@
       "saveCritSuccess": "you critically succeed at a save",
       "saveFailure": "you fail a save",
       "saveCritFailure": "you critically fail a save",
+      "saveAgainstSuccess": "someone succeeds at a save against you",
+      "saveAgainstCritSuccess": "someone critically succeeds at a save against you",
+      "saveAgainstFailure": "someone fails a save against you",
+      "saveAgainstCritFailure": "someone critically fails a save against you",
+      "category": {
+        "hitting": "You attack",
+        "gettingHit": "You are attacked",
+        "saving": "You save",
+        "savedAgainst": "Someone saves against you"
+      },
       "group": {
         "turn": "Turn",
         "attack": "Attacks",

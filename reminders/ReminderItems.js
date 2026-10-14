@@ -1,4 +1,4 @@
-import { triggerIcon, triggerLabel, triggerOf } from "./Triggers";
+import { triggerIconPlain, triggerLabel, triggerOf } from "./Triggers";
 
 function kindLabel(reminder) {
     if (reminder.messageId) {
@@ -10,14 +10,14 @@ function kindLabel(reminder) {
 
 /**
  * Adds what the templates need to show a reminder: the label saying where it comes from, and its trigger icon
- * with a tooltip.
+ * with a tooltip. The icon has no outcome colour in the lists.
  */
 export function toViewModels(reminders) {
     return reminders.map((reminder) => ({
         ...reminder,
         kindLabel: kindLabel(reminder),
         triggerLabel: triggerLabel(triggerOf(reminder)),
-        triggerIcon: triggerIcon(triggerOf(reminder)),
+        triggerIcon: triggerIconPlain(triggerOf(reminder)),
         triggerTooltip: game.i18n.format("REMINDERS.trigger.toggle", {
             trigger: triggerLabel(triggerOf(reminder)),
         }),

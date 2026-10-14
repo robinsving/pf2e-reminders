@@ -278,7 +278,7 @@ describe("onCreateChatMessage", () => {
 
     it("also posts the critical hit reminders on a critical hit", async () => {
         await onCreateChatMessage(attack("criticalSuccess"));
-        expect(createRemindersMessage.mock.calls.map(([, trigger]) => trigger)).toEqual(["hit", "crit"]);
+        expect(createRemindersMessage.mock.calls.map(([, trigger]) => trigger)).toEqual(["crit", "hit"]);
     });
 
     it("posts was hit reminders for the target's actor", async () => {

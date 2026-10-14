@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { TRIGGER_GROUPS, checkTriggersOf, DEFAULT_TRIGGER, supersedeGroup, getTrigger, triggerIcon, TRIGGERS, TRIGGERS_IN_FIRING_ORDER, triggerLabel, triggerOf } from "../reminders/Triggers";
+import { triggerIconPlain, TRIGGER_CATEGORY_LABELS, TRIGGER_GROUPS, checkTriggersOf, DEFAULT_TRIGGER, supersedeGroup, getTrigger, triggerIcon, TRIGGERS, TRIGGERS_IN_FIRING_ORDER, triggerLabel, triggerOf } from "../reminders/Triggers";
 
 const combat = { combatants: { get: (id) => ({ id }) } };
 const previous = { combatantId: "prev" };
@@ -18,7 +18,7 @@ describe("triggers", () => {
 
     it("fires the end of a turn before the start of the next", () => {
         expect(TRIGGERS_IN_FIRING_ORDER.map((trigger) => trigger.id)).toEqual(["turnEnd", "turnStart"]);
-        expect(TRIGGERS.map((trigger) => trigger.id)).toEqual(["turnStart", "turnEnd", "hit", "crit", "miss", "critMiss", "wasHit", "wasCritted", "wasMissed", "wasCritMissed", "saveSuccess", "saveCritSuccess", "saveFailure", "saveCritFailure"]);
+        expect(TRIGGERS.map((trigger) => trigger.id)).toEqual(["turnStart", "turnEnd", "crit", "hit", "miss", "critMiss", "wasCritted", "wasHit", "wasMissed", "wasCritMissed", "saveCritSuccess", "saveSuccess", "saveFailure", "saveCritFailure", "saveAgainstCritSuccess", "saveAgainstSuccess", "saveAgainstFailure", "saveAgainstCritFailure"]);
     });
 
     it("puts every trigger in a known group, with the groups in the order of the triggers", () => {
@@ -36,6 +36,31 @@ describe("triggers", () => {
     it("has an icon per trigger", () => {
         expect(triggerIcon("turnStart")).toContain("hourglass-start");
         expect(triggerIcon("turnEnd")).toContain("hourglass-end");
+    });
+
+    it("gives each kind of event one icon, and each outcome one colour class", () => {
+        const icon = (id) => triggerIcon(id);
+        const kindOf = (id) => icon(id).split(" ")[1];
+        const colourOf = (id) => icon(id).split(" ")[2];
+        // hitting, getting hit, saving and someone saving against you
+        expect(["hit", "crit", "miss", "critMiss"].map(kindOf)).toEqual(Array(4).fill("fa-crosshairs"));
+        expect(["wasHit", "wasCritted", "wasMissed", "wasCritMissed"].map(kindOf)).toEqual(Array(4).fill("fa-shield-halved"));
+        expect(["saveSuccess", "saveCritSuccess", "saveFailure", "saveCritFailure"].map(kindOf)).toEqual(Array(4).fill("fa-heart-pulse"));
+        expect(["saveAgainstSuccess", "saveAgainstCritSuccess", "saveAgainstFailure", "saveAgainstCritFailure"].map(kindOf)).toEqual(Array(4).fill("fa-wand-sparkles"));
+        // the colour is PF2e's colour for the outcome, whatever the event
+        for (const ids of [["hit", "wasHit", "saveSuccess", "saveAgainstSuccess"], ["crit", "wasCritted", "saveCritSuccess", "saveAgainstCritSuccess"], ["miss", "wasMissed", "saveFailure", "saveAgainstFailure"], ["critMiss", "wasCritMissed", "saveCritFailure", "saveAgainstCritFailure"]]) {
+            expect(new Set(ids.map(colourOf)).size).toBe(1);
+        }
+        expect(colourOf("hit")).toBe("pf2e-reminders-success");
+        expect(colourOf("crit")).toBe("pf2e-reminders-critical-success");
+        expect(colourOf("miss")).toBe("pf2e-reminders-failure");
+        expect(colourOf("critMiss")).toBe("pf2e-reminders-critical-failure");
+    });
+
+    it("can give a trigger icon without its outcome colour", () => {
+        expect(triggerIconPlain("hit")).toBe("fa-solid fa-crosshairs");
+        expect(triggerIconPlain("saveAgainstCritFailure")).toBe("fa-solid fa-wand-sparkles");
+        expect(triggerIconPlain("turnEnd")).toBe(triggerIcon("turnEnd"));
     });
 
     it("has a localized label", () => {
@@ -60,7 +85,7 @@ describe("check triggers", () => {
     });
 
     it("a critical hit fires the hit and the critical hit triggers on both sides", () => {
-        expect(ids(roll("criticalSuccess"))).toEqual(["hit", "crit", "wasHit", "wasCritted"]);
+        expect(ids(roll("criticalSuccess"))).toEqual(["crit", "hit", "wasCritted", "wasHit"]);
     });
 
     it("a miss fires miss for the attacker and was missed for the target", () => {
@@ -90,26 +115,43 @@ describe("check triggers", () => {
             ...extra,
         });
 
-        it("a success fires save success, and a critical success also the critical one, for the one who saved, not for the caster", () => {
-            expect(ids(save("success"))).toEqual(["saveSuccess"]);
-            expect(ids(save("criticalSuccess"))).toEqual(["saveSuccess", "saveCritSuccess"]);
-            expect(checkTriggersOf(save("success"))[0]).toMatchObject({ actorUuid: "Actor.saver", tokenUuid: "Scene.s.Token.s" });
+        it("a success fires save success for the one who saved and someone saved against you for the caster", () => {
+            expect(ids(save("success"))).toEqual(["saveSuccess", "saveAgainstSuccess"]);
+            expect(ids(save("criticalSuccess"))).toEqual(["saveCritSuccess", "saveSuccess", "saveAgainstCritSuccess", "saveAgainstSuccess"]);
+            const [saver, caster] = checkTriggersOf(save("success"));
+            expect(saver).toMatchObject({ actorUuid: "Actor.saver", tokenUuid: "Scene.s.Token.s" });
+            expect(caster).toMatchObject({ actorUuid: "Actor.caster", tokenUuid: "Scene.s.Token.c" });
         });
 
-        it("a failure fires save failure, and a critical failure also the critical one", () => {
-            expect(ids(save("failure"))).toEqual(["saveFailure"]);
-            expect(ids(save("criticalFailure"))).toEqual(["saveFailure", "saveCritFailure"]);
+        it("a failure fires save failure and someone failed against you, and a critical failure also the critical ones", () => {
+            expect(ids(save("failure"))).toEqual(["saveFailure", "saveAgainstFailure"]);
+            expect(ids(save("criticalFailure"))).toEqual(["saveFailure", "saveCritFailure", "saveAgainstFailure", "saveAgainstCritFailure"]);
         });
 
-        it("fires nothing for a save without a DC, which has no outcome, or without an actor", () => {
+        it("fires nothing for a save without a DC, which has no outcome", () => {
             expect(ids(save(null))).toEqual([]);
-            expect(ids(save("failure", { target: null }))).toEqual([]);
+        });
+
+        it("fires only for the side the roll has an actor for, as when the source of the save is not known", () => {
+            expect(ids(save("failure", { target: null }))).toEqual(["saveAgainstFailure"]);
+            expect(ids(save("failure", { origin: null }))).toEqual(["saveFailure"]);
         });
 
         it("keeps attack and save triggers apart", () => {
             expect(ids(roll("failure"))).not.toContain("saveFailure");
             expect(ids(save("success"))).not.toContain("wasHit");
         });
+    });
+
+    it("gives the roll triggers a category, the same one the icon is made from, and the turn triggers none", () => {
+        expect(TRIGGERS.filter((trigger) => trigger.kind === "turn").every((trigger) => trigger.category === undefined)).toBe(true);
+        for (const trigger of TRIGGERS.filter((candidate) => candidate.kind === "check")) {
+            expect(Object.keys(TRIGGER_CATEGORY_LABELS)).toContain(trigger.category);
+        }
+        expect(getTrigger("hit").category).toBe("hitting");
+        expect(getTrigger("wasHit").category).toBe("gettingHit");
+        expect(getTrigger("saveSuccess").category).toBe("saving");
+        expect(getTrigger("saveAgainstSuccess").category).toBe("savedAgainst");
     });
 
     it("groups all turn triggers together and every attack trigger on its own", () => {

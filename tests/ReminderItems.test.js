@@ -73,6 +73,12 @@ describe("the reminder items template", () => {
         });
     });
 
+    it("shows the trigger icons without an outcome colour, whatever the trigger", async () => {
+        const element = await renderItems([{ id: "a", text: "x", trigger: "hit" }, { id: "b", text: "y", trigger: "saveCritFailure" }], true);
+        const icons = [...element.querySelectorAll("a.pf2e-reminders-trigger i")].map((icon) => icon.className);
+        expect(icons).toEqual(["fa-solid fa-crosshairs", "fa-solid fa-heart-pulse"]);
+    });
+
     it("shows reminders without a trigger with the turn start icon", async () => {
         const element = await renderItems([{ id: "a", text: "x" }], true);
         expect(element.querySelector(".pf2e-reminders-trigger i").className).toContain("fa-hourglass-start");

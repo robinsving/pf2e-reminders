@@ -23,8 +23,8 @@ describe("pickTrigger", () => {
         const { form } = await openPicker("turnStart");
         const choices = [...form.querySelectorAll(".pf2e-reminders-choice")];
         expect(choices.map((choice) => choice.querySelector("input").value)).toEqual(TRIGGERS.map((trigger) => trigger.id));
-        expect(choices[2].querySelector("i").className).toContain("fa-crosshairs");
-        expect(choices[2].textContent).toContain("REMINDERS.trigger.hit");
+        expect(choices[3].querySelector("i").className).toContain("fa-crosshairs pf2e-reminders-success");
+        expect(choices[3].textContent).toContain("REMINDERS.trigger.hit");
     });
 
     it("has a tab per group, with the triggers of the group in its panel, in order", async () => {
@@ -32,7 +32,7 @@ describe("pickTrigger", () => {
         const tabs = [...form.querySelectorAll("nav.tabs [data-tab]")];
         expect(tabs.map((tab) => tab.textContent)).toEqual(["REMINDERS.trigger.group.turn", "REMINDERS.trigger.group.attack", "REMINDERS.trigger.group.save"]);
         const groups = TRIGGER_GROUPS.map((group) => TRIGGERS.filter((trigger) => trigger.group === group).map((trigger) => trigger.id));
-        expect(groups.map((ids) => ids.length)).toEqual([2, 8, 4]);
+        expect(groups.map((ids) => ids.length)).toEqual([2, 8, 8]);
         const panels = [...form.querySelectorAll(".tab")];
         expect(panels.map((panel) => [...panel.querySelectorAll("input")].map((input) => input.value))).toEqual(groups);
     });
@@ -46,6 +46,19 @@ describe("pickTrigger", () => {
             const panel = form.querySelector(`.tab[data-tab=${tab.dataset.tab}]`);
             expect(panel.dataset.group).toBe("triggers");
         }
+    });
+
+    it("lists the roll triggers under a heading for who the roll concerns, in the order they are defined", async () => {
+        const { form } = await openPicker("turnStart");
+        const headings = (tab) => [...form.querySelector(`.tab[data-tab=${tab}]`).querySelectorAll("h4.pf2e-reminders-subgroup")].map((heading) => heading.textContent);
+        expect(headings("attack")).toEqual(["REMINDERS.trigger.category.hitting", "REMINDERS.trigger.category.gettingHit"]);
+        expect(headings("save")).toEqual(["REMINDERS.trigger.category.saving", "REMINDERS.trigger.category.savedAgainst"]);
+        expect(headings("turn")).toEqual([]);
+        const attack = [...form.querySelector(".tab[data-tab=attack]").querySelectorAll(".pf2e-reminders-choices")];
+        expect(attack.map((section) => [...section.querySelectorAll("input")].map((input) => input.value))).toEqual([
+            ["crit", "hit", "miss", "critMiss"],
+            ["wasCritted", "wasHit", "wasMissed", "wasCritMissed"],
+        ]);
     });
 
     it("opens on the tab of the current trigger, with the tab and its panel active", async () => {
@@ -66,6 +79,13 @@ describe("pickTrigger", () => {
         expect(marked()).toEqual(["attack"]);
     });
 
+    it("puts the icon after the text in each row, so it can sit at the right edge", async () => {
+        const { form } = await openPicker("turnStart");
+        for (const choice of form.querySelectorAll(".pf2e-reminders-choice")) {
+            expect([...choice.children].map((child) => child.tagName)).toEqual(["INPUT", "SPAN", "I"]);
+        }
+    });
+
     it("has the current trigger selected, the default one for reminders without a trigger", async () => {
         expect((await openPicker("wasHit")).form.elements.trigger.value).toBe("wasHit");
         expect((await openPicker(undefined)).form.elements.trigger.value).toBe("turnStart");
@@ -73,7 +93,7 @@ describe("pickTrigger", () => {
 
     it("returns the trigger that is selected when confirmed", async () => {
         const { config, form } = await openPicker("turnStart");
-        form.elements.trigger[3].checked = true;
+        form.elements.trigger[2].checked = true;
         expect(config.ok.callback(undefined, { form })).toBe("crit");
     });
 
