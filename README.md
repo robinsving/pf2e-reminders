@@ -94,6 +94,7 @@ So a reminder on a plain success also fires on a critical success, and one on a 
 - The roll triggers fire right after a PF2e attack roll (strike or spell attack) or saving throw, as a private message like the turn ones.
 - Only actors you own count. The roll needs an outcome: an attack needs a target, and a save needs a DC (as when rolled from a spell card or a save button in chat). A plain save with no DC has no outcome and fires nothing. "Against you" needs the source of the save to be known, which is the case when the save is rolled from a spell card or effect.
 - A reroll that changes the outcome does not fire anything.
+- The roll triggers react to the chat message of the roll, so a client only fires when it receives that message. Foundry does not send private or blind GM rolls to the players: when the GM rolls an NPC's attack or a save as a private or blind roll, a player gets no "you are hit" or "someone saves against you" reminder for it. The GM still gets reminders for the actors they own.
 
 ## Settings
 - **Enable reminders** (client, on by default): turns every feature off for you: the chat menu entries, the sheet bells and **Reminders** button, the combat tracker entry and the reminders messages. Your stored reminders are kept, and **Manage reminders** still works.
@@ -105,7 +106,7 @@ So a reminder on a plain success also fires on a critical success, and one on a 
 ## Troubleshooting
 - The module always logs to the browser console when it registers its hooks and when it has initialized and is ready.
 - Turn on **Debug logging** to also print a summary at startup (version, settings, number of stored reminders, registered hooks), template loading, every change to your stored reminders, and each reminders message that is posted.
-- If there is no bell or **Reminders** button for an NPC, check the world setting **Reminders for NPCs**. If a roll trigger does not fire, check that the attack had a target (or the save a DC) and that you own the actor.
+- If there is no bell or **Reminders** button for an NPC, check the world setting **Reminders for NPCs**. If a roll trigger does not fire, check that the attack had a target (or the save a DC) and that you own the actor, and that the roll was not a private or blind GM roll, which players never receive.
 
 ## Development
 - Test suite: `npm test`
