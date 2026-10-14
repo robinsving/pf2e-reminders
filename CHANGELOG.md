@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.0 (2026-10-14)
+
+- feat: one icon per kind of roll event, coloured by outcome, and grouped in the popup (9288b05)
+- feat: add saving throw triggers and put the triggers in tabs (63e9a66)
+- docs: replace the reminders message screenshot with the subheader layout (a8ef22d)
+
 ## v0.2.0 (2026-10-14)
 
 - fix: update stale descriptions for the triggers (d20cc5b)
