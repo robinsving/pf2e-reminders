@@ -18,7 +18,7 @@ describe("triggers", () => {
 
     it("fires the end of a turn before the start of the next", () => {
         expect(TRIGGERS_IN_FIRING_ORDER.map((trigger) => trigger.id)).toEqual(["turnEnd", "turnStart"]);
-        expect(TRIGGERS.map((trigger) => trigger.id)).toEqual(["turnStart", "turnEnd", "hit", "crit", "wasHit", "wasCritted"]);
+        expect(TRIGGERS.map((trigger) => trigger.id)).toEqual(["turnStart", "turnEnd", "hit", "crit", "miss", "critMiss", "wasHit", "wasCritted", "wasMissed", "wasCritMissed"]);
     });
 
     it("treats reminders without a trigger as the default and unknown ids as the default trigger", () => {
@@ -58,9 +58,12 @@ describe("attack triggers", () => {
         expect(ids(roll("criticalSuccess"))).toEqual(["hit", "crit", "wasHit", "wasCritted"]);
     });
 
-    it("misses fire nothing", () => {
-        expect(ids(roll("failure"))).toEqual([]);
-        expect(ids(roll("criticalFailure"))).toEqual([]);
+    it("a miss fires miss for the attacker and was missed for the target", () => {
+        expect(ids(roll("failure"))).toEqual(["miss", "wasMissed"]);
+    });
+
+    it("a critical miss fires the miss and the critical miss triggers on both sides", () => {
+        expect(ids(roll("criticalFailure"))).toEqual(["miss", "critMiss", "wasMissed", "wasCritMissed"]);
     });
 
     it("ignores rolls that are not attacks and rolls without an outcome", () => {

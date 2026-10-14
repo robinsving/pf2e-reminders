@@ -37,6 +37,22 @@ export const TRIGGERS = [
         outcomes: ["criticalSuccess"],
     },
     {
+        id: "miss",
+        kind: "attack",
+        label: "REMINDERS.trigger.miss",
+        icon: "fa-solid fa-wind",
+        side: "origin",
+        outcomes: ["failure", "criticalFailure"],
+    },
+    {
+        id: "critMiss",
+        kind: "attack",
+        label: "REMINDERS.trigger.critMiss",
+        icon: "fa-solid fa-face-dizzy",
+        side: "origin",
+        outcomes: ["criticalFailure"],
+    },
+    {
         id: "wasHit",
         kind: "attack",
         label: "REMINDERS.trigger.wasHit",
@@ -51,6 +67,22 @@ export const TRIGGERS = [
         icon: "fa-solid fa-heart-crack",
         side: "target",
         outcomes: ["criticalSuccess"],
+    },
+    {
+        id: "wasMissed",
+        kind: "attack",
+        label: "REMINDERS.trigger.wasMissed",
+        icon: "fa-solid fa-person-running",
+        side: "target",
+        outcomes: ["failure", "criticalFailure"],
+    },
+    {
+        id: "wasCritMissed",
+        kind: "attack",
+        label: "REMINDERS.trigger.wasCritMissed",
+        icon: "fa-solid fa-user-shield",
+        side: "target",
+        outcomes: ["criticalFailure"],
     },
 ];
 

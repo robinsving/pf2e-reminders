@@ -67,8 +67,12 @@
       "turnEnd": "turn end",
       "hit": "you hit",
       "crit": "you critically hit",
+      "miss": "you miss",
+      "critMiss": "you critically miss",
       "wasHit": "you are hit",
       "wasCritted": "you are critically hit",
+      "wasMissed": "you are missed",
+      "wasCritMissed": "you are critically missed",
       "toggle": "Fires on: {trigger}. Click to choose another trigger.",
       "choose": "Choose a trigger",
       "select": "Select"
