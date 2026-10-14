@@ -17,7 +17,7 @@
     },
     "gotoItem": "Open the item",
     "itemGone": "The item no longer exists.",
-    "itemBell": "Add a reminder for this item, or remove its reminders",
+    "itemBell": "Add a reminder for this item, or remove its reminders. Shift-click to add or remove one on a chosen trigger.",
     "manager": {
       "name": "Stored reminders",
       "label": "Manage reminders",

@@ -39,7 +39,7 @@ When a reminder fires, a private chat message lists your reminders for that trig
 - The right side of the title line has a **+** to type a custom reminder for the message's actor and trigger, and a bell that opens the actor's reminders window (the same bell as on the sheets).
 
 ### 3. Add a reminder from a character sheet
-Every item row on an actor sheet (feats, actions, spells, effects, ...) gets a bell icon when you own the actor. Click it to add a reminder for that item, for example an aura or a sustained effect; a popup asks which trigger it fires on. Click the bell again to remove the item's reminders.
+Every item row on an actor sheet (feats, actions, spells, effects, ...) gets a bell icon when you own the actor. Click it to add a reminder for that item, for example an aura or a sustained effect; a popup asks which trigger it fires on. Click the bell again to remove the item's reminders. Shift-click the bell to choose a trigger even when the item already has a reminder: it adds a reminder on that trigger, or removes the one the item already has on it, so an item can have reminders on several triggers.
 
 ![The reminder bell on an item row](assets/item-bell.webp)
 

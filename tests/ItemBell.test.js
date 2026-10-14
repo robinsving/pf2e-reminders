@@ -254,6 +254,60 @@ describe("addItemBells", () => {
         expect(user.getFlag("pf2e-reminders", "reminders").map((reminder) => reminder.id)).toEqual(["c"]);
     });
 
+    describe("shift-click", () => {
+        const shiftClick = (bell) => bell.dispatchEvent(new MouseEvent("click", { shiftKey: true, bubbles: true, cancelable: true }));
+
+        beforeEach(() => {
+            user = makeDoc([{ id: "a", itemUuid: item.uuid, actorUuid: "Actor.a", trigger: "turnStart" }]);
+            game.user = user;
+        });
+
+        it("adds a reminder on another trigger even though the item has one, and keeps the old one", async () => {
+            pickTrigger.mockResolvedValueOnce("hit");
+            const html = makeHtml();
+            addItemBells(app, html);
+            shiftClick(html.querySelector(".pf2e-reminders-item-bell"));
+            await vi.waitFor(() => expect(user.setFlag).toHaveBeenCalled());
+            expect(user.getFlag("pf2e-reminders", "reminders").map((reminder) => reminder.trigger)).toEqual(["turnStart", "hit"]);
+        });
+
+        it("removes only the reminder on the chosen trigger when the item already has one there", async () => {
+            user = makeDoc([
+                { id: "a", itemUuid: item.uuid, actorUuid: "Actor.a", trigger: "turnStart" },
+                { id: "b", itemUuid: item.uuid, actorUuid: "Actor.a", trigger: "hit" },
+            ]);
+            game.user = user;
+            pickTrigger.mockResolvedValueOnce("hit");
+            const html = makeHtml();
+            addItemBells(app, html);
+            const bell = html.querySelector(".pf2e-reminders-item-bell");
+            shiftClick(bell);
+            await vi.waitFor(() => expect(user.getFlag("pf2e-reminders", "reminders")).toHaveLength(1));
+            expect(user.getFlag("pf2e-reminders", "reminders")[0].trigger).toBe("turnStart");
+            expect(bell.classList.contains("active")).toBe(true);
+        });
+
+        it("changes nothing when the popup is closed", async () => {
+            pickTrigger.mockResolvedValueOnce(undefined);
+            const html = makeHtml();
+            addItemBells(app, html);
+            shiftClick(html.querySelector(".pf2e-reminders-item-bell"));
+            await vi.waitFor(() => expect(pickTrigger).toHaveBeenCalled());
+            expect(user.setFlag).not.toHaveBeenCalled();
+        });
+
+        it("asks for a trigger like a plain click when the item has no reminder", async () => {
+            user = makeDoc();
+            game.user = user;
+            pickTrigger.mockResolvedValueOnce("miss");
+            const html = makeHtml();
+            addItemBells(app, html);
+            shiftClick(html.querySelector(".pf2e-reminders-item-bell"));
+            await vi.waitFor(() => expect(user.getFlag("pf2e-reminders", "reminders")).toHaveLength(1));
+            expect(pickTrigger).toHaveBeenCalledWith("turnStart");
+        });
+    });
+
     it("adds no bells when the user has turned the module off", () => {
         setSettings({ enabled: false });
         const html = makeHtml();

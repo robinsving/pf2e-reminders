@@ -5,6 +5,11 @@ import { findItemReminders, removeReminders, toggleItemReminder } from "./Remind
 import { pickTrigger } from "./TriggerPicker";
 import { DEFAULT_TRIGGER } from "./Triggers";
 
+/**
+ * A click on the bell removes the item's reminders, or asks for a trigger and adds one when it has none. A
+ * shift-click always asks for a trigger and adds a reminder on it, or removes the one the item already has on it, so
+ * an item can have a reminder on several triggers.
+ */
 function createBell(item) {
     const bell = document.createElement("a");
     bell.className = "pf2e-reminders-item-bell";
@@ -16,14 +21,14 @@ function createBell(item) {
         event.stopPropagation();
         try {
             const existing = findItemReminders(game.user, item);
-            if (existing.length) {
+            if (existing.length && !event.shiftKey) {
                 await removeReminders(game.user, existing.map((reminder) => reminder.id));
                 debug(`Removed reminder for item ${item.uuid}`);
             } else {
                 const trigger = await pickTrigger(DEFAULT_TRIGGER);
                 if (!trigger) return;
-                await toggleItemReminder(game.user, item, trigger);
-                debug(`Added ${trigger} reminder for item ${item.uuid}`);
+                const added = await toggleItemReminder(game.user, item, trigger);
+                debug(`${added ? "Added" : "Removed"} ${trigger} reminder for item ${item.uuid}`);
             }
             bell.classList.toggle("active", findItemReminders(game.user, item).length > 0);
         } catch (e) {
